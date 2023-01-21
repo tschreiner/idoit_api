@@ -44,6 +44,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/tschreiner/idoit_api',
-    version='0.0.2',
+    version='0.0.3',
     zip_safe=False,
 )
