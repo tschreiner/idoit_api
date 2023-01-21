@@ -1,6 +1,7 @@
 """Console script for idoit_api."""
 import sys
 import click
+import idoit_api_client
 
 
 @click.command()

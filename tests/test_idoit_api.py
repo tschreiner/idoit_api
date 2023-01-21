@@ -6,8 +6,8 @@ import pytest
 
 from click.testing import CliRunner
 
-from idoit_api import idoit_api
-from idoit_api import cli
+from idoit_api_client import idoit_api_client
+from idoit_api_client import cli
 
 
 @pytest.fixture

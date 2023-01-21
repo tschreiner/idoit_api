@@ -31,7 +31,7 @@ setup(
     description="i-doit API Client for Python. Translated from the original PHP source.",
     entry_points={
         'console_scripts': [
-            'idoit_api=idoit_api.cli:main',
+            'idoit_api_client=idoit_api_client.cli:main',
         ],
     },
     install_requires=requirements,
@@ -40,7 +40,7 @@ setup(
     include_package_data=True,
     keywords='idoit_api_client',
     name='idoit_api_client',
-    packages=find_packages(include=['idoit_api', 'idoit_api.*']),
+    packages=find_packages(include=['idoit_api_client', 'idoit_api_client.*']),
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/tschreiner/idoit_api',
