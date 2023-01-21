@@ -22,6 +22,15 @@ def test_content(response):
     # from bs4 import BeautifulSoup
     # assert 'GitHub' in BeautifulSoup(response.content).title.string
 
+def test_api():
+    """Test API."""
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'ABC'
+    }
+    api = API(config)
+    assert api is not None
+
 def test_constants():
     """Test constants."""
     constants =  Constants

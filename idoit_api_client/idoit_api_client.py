@@ -151,20 +151,21 @@ class API:
             ]
         }
 
-        if self._config[Constants.PROXY] is not None and self._config[Constants.PROXY][Constants.PROXY_ACTIVE]:
-            self._config['CURLOPT_PROXY'] = self._config[Constants.PROXY][Constants.PROXY_HOST]
-            self._options['CURLOPT_PROXYPORT'] = self._config[Constants.PROXY][Constants.PROXY_PORT]
+        if self._config.get(Constants.PROXY) is not None:
+            if self._config[Constants.PROXY] is not None and self._config[Constants.PROXY][Constants.PROXY_ACTIVE]:
+                self._config['CURLOPT_PROXY'] = self._config[Constants.PROXY][Constants.PROXY_HOST]
+                self._options['CURLOPT_PROXYPORT'] = self._config[Constants.PROXY][Constants.PROXY_PORT]
 
-            if self._config[Constants.PROXY][Constants.PROXY_USERNAME] is not None and isinstance(self._config[Constants.PROXY][Constants.PROXY_USERNAME], str) and self._config[Constants.PROXY][Constants.PROXY_USERNAME] != '':
-                self._options['CURLOPT_PROXYUSERPWD'] = '{}:{}'.format(self._config[Constants.PROXY][Constants.PROXY_USERNAME], self._config[Constants.PROXY][Constants.PROXY_PASSWORD])
+                if self._config[Constants.PROXY][Constants.PROXY_USERNAME] is not None and isinstance(self._config[Constants.PROXY][Constants.PROXY_USERNAME], str) and self._config[Constants.PROXY][Constants.PROXY_USERNAME] != '':
+                    self._options['CURLOPT_PROXYUSERPWD'] = '{}:{}'.format(self._config[Constants.PROXY][Constants.PROXY_USERNAME], self._config[Constants.PROXY][Constants.PROXY_PASSWORD])
 
-            if self._config[Constants.PROXY][Constants.PROXY_TYPE] is not None:
-                if self._config[Constants.PROXY][Constants.PROXY_TYPE] == Constants.PROXY_TYPE_HTTP:
-                    self._options['CURLOPT_PROXYTYPE'] = "CURLPROXY_HTTP"
-                elif self._config[Constants.PROXY][Constants.PROXY_TYPE] == Constants.PROXY_TYPE_SOCKS5:
-                    self._options['CURLOPT_PROXYTYPE'] = "CURLPROXY_SOCKS5"
-                else:
-                    raise Exception('Invalid proxy type: {}'.format(self._config[Constants.PROXY][Constants.PROXY_TYPE]))
+                if self._config[Constants.PROXY][Constants.PROXY_TYPE] is not None:
+                    if self._config[Constants.PROXY][Constants.PROXY_TYPE] == Constants.PROXY_TYPE_HTTP:
+                        self._options['CURLOPT_PROXYTYPE'] = "CURLPROXY_HTTP"
+                    elif self._config[Constants.PROXY][Constants.PROXY_TYPE] == Constants.PROXY_TYPE_SOCKS5:
+                        self._options['CURLOPT_PROXYTYPE'] = "CURLPROXY_SOCKS5"
+                    else:
+                        raise Exception('Invalid proxy type: {}'.format(self._config[Constants.PROXY][Constants.PROXY_TYPE]))
 
         if self._config[Constants.BYPASS_SECURE_CONNECTION]:
             self._options['CURLOPT_SSL_VERIFYPEER'] = False
@@ -376,8 +377,8 @@ class API:
         else:
             value = self._config[key]
 
-        if (type(value) is not int) or (value < Constants.PORT_MIN) or (value > Constants.PORT_MAX):
-            raise Exception(f'Configuration setting "{key}" is not a valid port number between {Constants.PORT_MIN} and {Constants.PORT_MAX}.')
+        if type(value) is not str:
+            raise Exception(f'Configuration setting "{key}" is not a string.')
 
     def _check_port(self, key, sub_key=None):
         """Checks if a key is a valid port number"""
@@ -388,9 +389,9 @@ class API:
         else:
             value = self._config[key]
 
-        if type(value) is not int or value < Constants.PORT_MIN or value > Constants.PORT_MAX:
-            raise Exception(f'Configuration setting "{key}" must be a port number.')
 
+        if (type(value) is not int) or (value < Constants.PORT_MIN) or (value > Constants.PORT_MAX):
+            raise Exception(f'Configuration setting "{key}" is not a valid port number between {Constants.PORT_MIN} and {Constants.PORT_MAX}.')
 
     def is_logged_in(self):
         """Is client logged-in to API?"""
