@@ -3,8 +3,8 @@ i-doit API Client for Python
 ============================
 
 
-.. image:: https://img.shields.io/pypi/v/idoit_api.svg
-        :target: https://pypi.python.org/pypi/idoit_api
+.. image:: https://img.shields.io/pypi/v/idoit_api_client.svg
+        :target: https://pypi.python.org/pypi/idoit_api_client
 
 .. image:: https://img.shields.io/travis/tschreiner/idoit_api.svg
         :target: https://travis-ci.com/tschreiner/idoit_api
