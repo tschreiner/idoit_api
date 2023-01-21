@@ -3,9 +3,8 @@
 
 import pytest
 from click.testing import CliRunner
-from idoit_api_client import idoit_api_client
 
-from idoit_api_client.idoit_api_client import Constants, API
+from idoit_api_client import Constants, API
 from idoit_api_client import cli
 
 
