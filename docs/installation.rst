@@ -12,7 +12,7 @@ To install i-doit API Client for Python, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install idoit_api
+    $ pip install idoit_api_client
 
 This is the preferred method to install i-doit API Client for Python, as it will always install the most recent stable release.
 

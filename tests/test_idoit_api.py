@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Tests for `idoit_api` package."""
+"""Tests for `idoit_api_client` package."""
 
 import pytest
 
@@ -31,7 +31,7 @@ def test_command_line_interface():
     runner = CliRunner()
     result = runner.invoke(cli.main)
     assert result.exit_code == 0
-    assert 'idoit_api.cli.main' in result.output
+    assert 'idoit_api_client.cli.main' in result.output
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output

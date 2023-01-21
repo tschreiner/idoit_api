@@ -1,14 +1,13 @@
-"""Console script for idoit_api."""
+"""Console script for idoit_api_client."""
 import sys
 import click
-import idoit_api_client
 
 
 @click.command()
 def main(args=None):
-    """Console script for idoit_api."""
+    """Console script for idoit_api_client."""
     click.echo("Replace this message by putting your code into "
-               "idoit_api.cli.main")
+               "idoit_api_client.cli.main")
     click.echo("See click documentation at https://click.palletsprojects.com/")
     return 0
 

@@ -66,8 +66,8 @@ Ready to contribute? Here's how to set up `idoit_api` for local development.
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv idoit_api
-    $ cd idoit_api/
+    $ mkvirtualenv idoit_api_client
+    $ cd idoit_api_client/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -79,7 +79,7 @@ Ready to contribute? Here's how to set up `idoit_api` for local development.
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 idoit_api tests
+    $ flake8 idoit_api_client tests
     $ python setup.py test or pytest
     $ tox
 
@@ -111,7 +111,7 @@ Tips
 
 To run a subset of tests::
 
-$ pytest tests.test_idoit_api
+$ pytest tests.test_idoit_api_client
 
 
 Deploying

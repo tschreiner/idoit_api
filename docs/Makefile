@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = idoit_api
+SPHINXPROJ    = idoit_api_client
 SOURCEDIR     = .
 BUILDDIR      = _build
 

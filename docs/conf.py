@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# idoit_api documentation build configuration file, created by
+# idoit_api_client documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  9 13:47:02 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -100,7 +100,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'idoit_apidoc'
+htmlhelp_basename = 'idoit_api_clientdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------
@@ -138,7 +138,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'idoit_api',
+    (master_doc, 'idoit_api_client',
      'i-doit API Client for Python Documentation',
      [author], 1)
 ]
@@ -150,10 +150,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'idoit_api',
+    (master_doc, 'idoit_api_client',
      'i-doit API Client for Python Documentation',
      author,
-     'idoit_api',
+     'idoit_api_client',
      'One line description of project.',
      'Miscellaneous'),
 ]

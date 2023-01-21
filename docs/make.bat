@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=idoit_api
+set SPHINXPROJ=idoit_api_client
 
 if "%1" == "" goto help
 
