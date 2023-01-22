@@ -2,7 +2,7 @@ from unicodedata import category
 import pytest
 from click.testing import CliRunner
 
-from idoit_api_client.constants import Category, ObjectType
+from tests.constants import Category, ObjectType
 
 class TestClassIdoitApiClientConstantsCategory:
     """Test class idoit_api_client.Constants"""
