@@ -7,6 +7,9 @@ __version__ = '0.0.5'
 
 from enum import Enum
 from multiprocessing.sharedctypes import Value
+import requests
+from requests import Request, Session
+import json
 
 """Constants"""
 class Constants:
@@ -96,6 +99,9 @@ class API:
     """cURL resource"""
     _curl = None
 
+    """requests Session"""
+    _resource = None
+
     """Information about last client request"""
     _last_info = {}
 
@@ -149,10 +155,10 @@ class API:
             "CURLOPT_URL": self._config[Constants.URL],
             # In seconds:
             "CURLOPT_CONNECTTIMEOUT": 10,
-            "CURLOPT_HTTPHEADER": [
-                'Content-Type: application/json',
-                'Expect:'
-            ]
+            "CURLOPT_HTTPHEADER": {
+                "Content-Type": "application/json",
+                #"Expect": "application/json"
+            }
         }
 
         if self._config.get(Constants.PROXY) is not None:
@@ -184,7 +190,7 @@ class API:
         """Not used in python"""
         self._composer = {}
 
-    def evaluate_response(self, response):
+    def _evaluate_response(self, response):
         """Evaluates server response
 
         Args:
@@ -195,9 +201,11 @@ class API:
 
         Raises:
             Exception: If response is invalid"""
-        raise Exception("Not implemented yet")
+        if not isinstance(response, dict):
+            raise Exception('Invalid response: must be a dictionary.')
 
         if 'error' in response and response['error'] is not None:
+            raise Exception('Server error: {}'.format(response['error']))
             if not isinstance(response['error'], dict):
                 raise Exception('Invalid response: "error" must be a dictionary.')
 
@@ -218,7 +226,7 @@ class API:
         Returns:
             dict: Response"""
         for header, value in headers:
-            self._options[Constants.CURLOPT_HTTPHEADER].append('{}: {}'.format(header, value))
+            self._options[Constants.CURLOPT_HTTPHEADER][header] = value
 
         return self._execute(data)
 
@@ -435,7 +443,7 @@ class API:
         """How many requests were already send?"""
         return self._id
 
-    def request(self, method, params=[]):
+    def request(self, method, params={}):
         """Sends request to API
 
         Args:
@@ -444,7 +452,6 @@ class API:
 
         Returns:
             Result of request"""
-
         data = {
             'version': '2.0',
             'method': method,
@@ -452,27 +459,14 @@ class API:
             'id': self._gen_id()
         }
 
-        data["params"]["apikey"] = self._config["apikey"]
+        data["params"]["apikey"] = self._config[Constants.KEY]
 
-        if not self.is_logged_in():
-            raise Exception('Not logged in')
+        if Constants.LANGUAGE in self._config:
+            if Constants.LANGUAGE not in data["params"]:
+                data["params"]["language"] = self._config[Constants.LANGUAGE]
 
-        if params is None:
-            params = {}
-
-        params['session-id'] = self._session
-
-        data = {
-            'jsonrpc': '2.0',
-            'method': method,
-            'params': params,
-            'id': self._gen_id()
-        }
-
-        response = self._request(data)
-
-        if 'error' in response:
-            raise Exception('API error: ' + response['error']['message'])
+        response = self._execute(data)
+        self._evaluate_response(response)
 
         return response['result']
 
@@ -497,7 +491,7 @@ class API:
 
             params["apikey"] = self._config[Constants.KEY]
 
-            if self._config[Constants.LANGUAGE] is not None:
+            if Constants.LANGUAGE in self._config:
                 params["language"] = self._config[Constants.LANGUAGE]
 
             data.append({
@@ -532,36 +526,49 @@ class API:
 
         options["CURLOPT_POSTFIELDS"] = data_as_string
 
-        if self._session is not None:
-            options["CURLOPT_HTTPHEADER"] = [
-                "X-Auth-Token: " + self._session
-            ]
-        elif self._config[Constants.USERNAME] is not None and isinstance(self._config[Constants.USERNAME], str) and self._config[Constants.USERNAME] != "" and self._config[Constants.PASSWORD] is not None and isinstance(self._config[Constants.PASSWORD], str) and self._config[Constants.PASSWORD] != "":
-            options["CURLOPT_HTTPHEADER"].append(f"X-RPC-Auth-Username: {self._config[Constants.USERNAME]}")
-            options["CURLOPT_HTTPHEADER"].append(f"X-RPC-Auth-Password: {self._config[Constants.PASSWORD]}")
+        options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Username"] = self._config[Constants.USERNAME]
+        options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Password"] = self._config[Constants.PASSWORD]
 
-        curl_setopt_array(self._resource, options)
+        #if self._session is not None:
+        #    options["CURLOPT_HTTPHEADER"] = {
+        #        "X-Auth-Token": self._session
+        #    }
+        if Constants.USERNAME in self._config and isinstance(self._config[Constants.USERNAME], str) and self._config[Constants.USERNAME] != "" and self._config[Constants.PASSWORD] is not None and isinstance(self._config[Constants.PASSWORD], str) and self._config[Constants.PASSWORD] != "":
+            options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Username"] = self._config[Constants.USERNAME]
+            options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Password"] = self._config[Constants.PASSWORD]
 
+        #curl_setopt_array(self._resource, options)
 
+        headers = options["CURLOPT_HTTPHEADER"]
+        payload = options["CURLOPT_POSTFIELDS"]
 
+        s = Session()
+        req = Request("POST", self._config[Constants.URL], data=payload, headers=headers)
+        prepped = s.prepare_request(req)
+        resp = s.send(prepped)
+
+        resp_body_object = resp.json()
+
+        return resp_body_object
 
     def is_connected(self):
         """Is client connected to API?"""
-        """TODO: Implement this method"""
-        return True
+        if self._resource is not None:
+            return True
+        return False
 
     def connect(self):
         """Connect to API"""
-        self._resource = curl_init()
+        self._resource = requests.Session()
 
         if self._resource is None:
             raise Exception('Failed to initialize cURL')
 
     def disconnect(self):
-        if self._is_connected():
+        if self.is_connected() is False:
             raise Exception('Not connected')
 
-        curl_close(self._resource)
+        self._resource = None
 
     def __del__(self):
         """Destructor"""
