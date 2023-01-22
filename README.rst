@@ -38,7 +38,8 @@ Features
 Usage
 -----
 
-::
+Simple usage example::
+
     from idoit_api_client import Constants, API
     config = {
         Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
