@@ -30,7 +30,29 @@ i-doit API Client for Python. Translated from the original PHP source.
 Features
 --------
 
-* TODO
+* Make requests to the i-doit API with a method name and parameters
+* Requests are parsed, checked and returned as a dictionary
+* Make raw requests to the i-doit API
+* TODO: Read/create/upsert i-doit Objects, Object Types, Object Categories and Object Category Attributes
+
+Usage
+-----
+
+::
+    from idoit_api_client import Constants, API
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'c1ia5q',
+        Constants.USERNAME: 'admin',
+        Constants.PASSWORD: 'admin'
+    }
+    api = API(config)
+    api.login()
+    result = api.request('cmdb.category.read', {
+        'objID': 1,
+        'category': 'C__CATG__GLOBAL'
+    })
+    print(result)
 
 Credits
 -------
