@@ -7,6 +7,20 @@ from click.testing import CliRunner
 from idoit_api_client import Constants, API
 from idoit_api_client import cli
 
+class BaseTest:
+    """Base test class."""
+    pass
+
+class APITest(BaseTest):
+    """Test API."""
+    def test_constructor(self):
+        """Test constructor."""
+        config = {
+            Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+            Constants.KEY: 'c1ia5q'
+        }
+        api = API(config)
+        assert api is instanceof(API)
 
 @pytest.fixture
 def response():
@@ -21,14 +35,124 @@ def test_content(response):
     # from bs4 import BeautifulSoup
     # assert 'GitHub' in BeautifulSoup(response.content).title.string
 
-def test_api():
-    """Test API."""
+#def test_connect_no_url():
+#def test_connect_no_key():
+#def test_connect_no_username():
+#def test_connect_no_password():
+
+#def test_login_no_url():
+#def test_login_no_key():
+#def test_login_no_username():
+#def test_login_no_password():
+
+#def test_request_no_url():
+#def test_request_no_key():
+#def test_request_no_username():
+#def test_request_no_password():
+
+#def test_request_no_method():
+#def test_request_no_params():
+
+#def test_request_invalid_method():
+#def test_request_invalid_params():
+
+#def test_is_connected():
+#def test_is_logged_in():
+
+#def test_request_content():
+#def test_request_invalid_content():
+
+
+
+#def test _request():
+#def test_raw_request():
+#def test_batch_request():
+
+def test_scenario():
+    """Test a complete scenario."""
     config = {
         Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'ABC'
+        Constants.KEY: 'c1ia5q',
+        Constants.USERNAME: 'admin',
+        Constants.PASSWORD: 'admin'
     }
     api = API(config)
-    assert api is not None
+    api.connect()
+    api.login()
+    result = api.request('cmdb.category.read', {
+        'objID': 1,
+        'category': 'C__CATG__GLOBAL'
+    })
+    api.logout()
+    assert result is not None
+
+def test_batch_scenario():
+    """Test a complete batch scenario."""
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'c1ia5q',
+        Constants.USERNAME: 'admin',
+        Constants.PASSWORD: 'admin'
+    }
+    api = API(config)
+    api.connect()
+    api.login()
+    result = api.batch_request([
+        {
+            'method': 'cmdb.category.read',
+            'params': {
+                'objID': 1,
+                'category': 'C__CATG__GLOBAL'
+            }
+        },
+        {
+            'method': 'cmdb.category.read',
+            'params': {
+                'objID': 1,
+                'category': 'C__CATG__GLOBAL'
+            }
+        }
+    ])
+    api.logout()
+    assert result is not None
+
+def test_connect():
+    """Test connect."""
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'c1ia5q'
+    }
+    api = API(config)
+    api.connect()
+    assert api._resource is not None
+
+def test_login():
+    """Test login."""
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'c1ia5q',
+        Constants.USERNAME: 'admin',
+        Constants.PASSWORD: 'admin'
+    }
+    api = API(config)
+    api.login()
+    assert api.is_logged_in() is True
+
+def test_request():
+    """Test request."""
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'c1ia5q',
+        Constants.USERNAME: 'admin',
+        Constants.PASSWORD: 'admin'
+    }
+    api = API(config)
+    api.login()
+    result = api.request('cmdb.category.read', {
+        'objID': 1,
+        'category': 'C__CATG__GLOBAL'
+    })
+    assert result is not None
 
 def test_constants():
     """Test constants."""
