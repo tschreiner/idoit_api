@@ -8,7 +8,7 @@ __version__ = '0.0.5'
 from enum import Enum
 from multiprocessing.sharedctypes import Value
 import requests
-from requests import Request, Session
+from requests import Request as ReqRequest, Session
 import json
 
 """Constants"""
@@ -543,7 +543,7 @@ class API:
         payload = options["CURLOPT_POSTFIELDS"]
 
         s = Session()
-        req = Request("POST", self._config[Constants.URL], data=payload, headers=headers)
+        req = ReqRequest("POST", self._config[Constants.URL], data=payload, headers=headers)
         prepped = s.prepare_request(req)
         resp = s.send(prepped)
 
@@ -581,4 +581,53 @@ class API:
             """Do nothing because this is a destructor."""
             pass
 
+
+"""Request class for the i-doit API client."""
+class Request:
+    api = None
+
+    def __init__(self, api):
+        """Initialize the request object.
+
+        :param api: The API object
+        :type api: API
+        """
+        self.api = api
+
+    def require_success_for(self, result):
+        """Check for success and return identifier.
+
+        :param result: Response from API request
+        :type result: dict
+        :return: Identifier
+        :rtype: int
+        """
+        if "id" not in result or type(result["id"]) is not int or "success" not in result or type(result["success"]) is not True:
+            if "message" in result:
+                raise Exception(f"Bad result: {result['message']}")
+            else:
+                raise Exception("Bad result.")
+
+        return result["id"]
+
+    def require_success_without_identifier(self, result):
+        """Check for success but ignore identifier.
+
+        :param result: Response from API request
+        :type result: dict
+        """
+        if "success" not in result or type(result["success"]) is not True:
+            if "message" in result:
+                raise Exception(f"Bad result: {result['message']}")
+            else:
+                raise Exception("Bad result.")
+
+    def require_success_for_all(self, results):
+        """Check for success for all results.
+
+        :param results: Response from API request
+        :type results: list
+        """
+        for result in results:
+            self.require_success_without_identifier(result)
 
