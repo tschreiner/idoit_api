@@ -35,6 +35,13 @@ Features
 * Make raw requests to the i-doit API
 * TODO: Read/create/upsert i-doit Objects, Object Types, Object Categories and Object Category Attributes
 
+Implemented Objects and Methods
+-------------------------------
+
+| Object | Method | Implemented | Tests implemented |
+|--------|--------|-------------|-------------------|
+| CMDBObjectType | read | Yes | Yes |
+
 Usage
 -----
 

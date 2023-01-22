@@ -592,7 +592,7 @@ class Request:
         :param api: The API object
         :type api: API
         """
-        self.api = api
+        self._api = api
 
     def require_success_for(self, result):
         """Check for success and return identifier.
