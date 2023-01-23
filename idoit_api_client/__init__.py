@@ -630,4 +630,3 @@ class Request:
         """
         for result in results:
             self.require_success_without_identifier(result)
-
