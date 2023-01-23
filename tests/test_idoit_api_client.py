@@ -25,7 +25,7 @@ class APITest(BaseTest):
             Constants.KEY: 'c1ia5q'
         }
         api = API(config)
-        assert api is instanceof(API)
+        assert isinstance(api, API)
 
 @pytest.fixture
 def response():
