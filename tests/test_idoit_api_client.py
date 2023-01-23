@@ -4,12 +4,17 @@
 import pytest
 from click.testing import CliRunner
 
+import random
+import string
+
 from idoit_api_client import Constants, API
 from idoit_api_client import cli
 
 class BaseTest:
     """Base test class."""
-    pass
+    def _generate_random_string(self):
+        """Generate random string."""
+        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
 class APITest(BaseTest):
     """Test API."""
