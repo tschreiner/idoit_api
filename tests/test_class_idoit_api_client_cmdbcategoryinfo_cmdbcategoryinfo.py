@@ -103,7 +103,7 @@ class TestClassIdoitAPIClientCMDBCategoryInfoCMDBCategoryInfo(BaseTest):
         assert "index" in attribute["data"]
         assert isinstance(attribute["data"]["index"], bool)
 
-        if attribute["data"]["field"] is not None:
+        if "field" in attribute["data"]:
             assert isinstance(attribute["data"]["field"], str)
             assert len(attribute["data"]["field"]) > 0
 
@@ -133,6 +133,28 @@ class TestClassIdoitAPIClientCMDBCategoryInfoCMDBCategoryInfo(BaseTest):
             assert isinstance(attribute["check"]["mandatory"], bool)
 
         # continue from https://github.com/i-doit/api-client-php/blob/8c1fe9222b1cff67c7501dbe60bcf44bead3044a/tests/Idoit/APIClient/CMDBCategoryInfoTest.php#L237
+
+    def test_batch_read(self):
+        self._set_up()
+        result = self._instance.batch_read(self._categories)
+        assert isinstance(result, list)
+        assert len(result) == len(self._categories)
+
+        for category_info in result:
+            assert isinstance(category_info, dict)
+            assert len(category_info) > 0
+            self._is_category_info(category_info)
+
+    def test_read_all(self):
+        self._set_up()
+        result = self._instance.read_all()
+
+        assert isinstance(result, dict)
+        assert len(result) != 0
+
+        for category_const, category_info in result.items():
+            if isinstance(category_const, str) and isinstance(category_info, dict):
+                self._is_category_info(category_info)
 
     def _is_category_info(self, category):
         for attribute_title, attribute in category.items():
