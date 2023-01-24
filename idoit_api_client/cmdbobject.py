@@ -1,6 +1,6 @@
 """CMDBObject class for i-doit API client."""
 from idoit_api_client import Request
-
+from idoit_api_client.cmdbcategory import CMDBCategory
 
 class CMDBObject(Request):
     """CMDBObject class for i-doit API client."""

@@ -112,3 +112,43 @@ class TestClassIdoitAPIClientCMDBCategory:
             assert isinstance(entry[attribute], dict)
             assert "title" in entry[attribute]
             assert value == entry[attribute]["title"]
+
+    def test_update(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.update()
+
+    def test_archive(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.archive()
+
+    def test_delete(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.delete()
+
+    def test_purge(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.purge()
+
+    def test_recycle(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.recycle()
+
+    def test_quick_purge(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.quick_purge()
+
+    def test_batch_create(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.batch_create()
+
+    def test_batch_read(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.batch_read()
+
+    def test_batch_update(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.batch_update()
+
+    def test_clear(self):
+        cmdb_category = self._use_cmdb_category()
+        cmdb_category.clear()

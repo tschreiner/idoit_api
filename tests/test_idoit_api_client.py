@@ -6,15 +6,222 @@ from click.testing import CliRunner
 
 import random
 import string
+#import datetime
+#from dateutil.parser import parse as timeparse
+
 
 from idoit_api_client import Constants, API
 from idoit_api_client import cli
+from idoit_api_client.cmdbobject import CMDBObject
+from idoit_api_client.cmdbobjects import CMDBObjects
+from idoit_api_client.cmdbcategory import CMDBCategory
+
+
+from tests.constants import Category, ObjectType
+
 
 class BaseTest:
     """Base test class."""
+    _cmdb_object = None
+    _cmdb_category = None
+    config = {
+        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
+        Constants.KEY: 'c1ia5q'
+    }
+    _api = None
+    _conditions = [
+        1,  # Unfinished
+        2,  # Normal
+        3,  # Archived
+        4,  # Deleted
+        6,  # Template
+        7  # Mass change template
+    ]
+
+    def _set_up(self) -> None:
+        """Constructor."""
+        api = API(self.config)
+        #self._instance = CMDBCategory(api)
+        config = {
+            Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+            Constants.KEY: "c1ia5q",
+            Constants.USERNAME: "admin",
+            Constants.PASSWORD: "admin",
+        }
+        self._config = config
+        self._api = API(config)
+
+    def _is_id(self, id):
+        """Check if id is a valid id."""
+        return isinstance(id, int) and id > 0
+
+    def _is_id_as_string(self, value):
+        """Check if id is a valid id."""
+        assert isinstance(value, str)
+        id = int(value)
+        assert id > 0
+    
     def _generate_random_string(self):
         """Generate random string."""
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
+    def _create_server(self):
+        cmdb_object = self._use_cmdb_object()
+        result = cmdb_object.create(ObjectType.SERVER, self._generate_random_string())
+
+        return result
+
+    def _generate_description(self):
+        """Generate longer description text."""
+        description_text = f"This is a test object created by the idoit_api_client test suite. "
+        return description_text
+
+    def _use_cmdb_category(self):
+        if self._api is None:
+            self._set_up()
+
+        if self._cmdb_category is None:
+            self._cmdb_category = CMDBCategory(self._api)
+
+        return self._cmdb_category
+
+    def _use_cmdb_object(self):
+        """Use CMDBObject."""
+        api = API(self.config)
+        api.connect()
+        api.login()
+        cmdb_object = CMDBObject(api)
+        return cmdb_object
+
+    def _use_cmdb_objects(self):
+        """Use CMDBObjects."""
+        api = API(self.config)
+        api.connect()
+        api.login()
+        cmdb_objects = CMDBObjects(api)
+        return cmdb_objects
+
+    def _is_id(self, id):
+        """Check if id is a valid id."""
+        return isinstance(id, int) and id > 0
+
+    def _is_normal(self, object_id):
+        """Check if object is normal."""
+        cmdb_object = self._use_cmdb_object()
+        object_data = cmdb_object.read(object_id)
+        assert isinstance(object_data, dict)
+        assert "status" in object_data
+        assert 2 == int(object_data["status"])
+
+    def _is_archived(self, object_id):
+        """Check if object is archived."""
+        cmdb_object = self._use_cmdb_object()
+        object_data = cmdb_object.read(object_id)
+        assert isinstance(object_data, dict)
+        assert "status" in object_data
+        assert 3 == int(object_data["status"])
+
+    def _is_deleted(self, object_id):
+        """Check if object is archived."""
+        cmdb_object = self._use_cmdb_object()
+        object_data = cmdb_object.read(object_id)
+        assert isinstance(object_data, dict)
+        assert "status" in object_data
+        assert 4 == int(object_data["status"])
+
+    def _is_purged(self, object_id):
+        """Check if object is purged."""
+        cmdb_object = self._use_cmdb_object()
+        object_data = cmdb_object.read(object_id)
+        assert len(object_data) == 0
+
+    def _is_template(self, object_id):
+        """Check if object is template."""
+        cmdb_object = self._use_cmdb_object()
+        object_data = cmdb_object.read(object_id)
+        assert isinstance(object_data, dict)
+        assert "status" in object_data
+        assert 6 == int(object_data["status"])
+
+    def _is_mass_change_template(self, object_id):
+        """Check if object is mass change template."""
+        cmdb_object = self._use_cmdb_object()
+        object_data = cmdb_object.read(object_id)
+        assert isinstance(object_data, dict)
+        assert "status" in object_data
+        assert 7 == int(object_data["status"])
+
+    def _generate_ipv4_address(self):
+        """Generate random IPv4 address."""
+        return ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
+
+    def _get_ipv4_net(self):
+        """Find object "Global v4"""
+        cmdb_objects = self._use_cmdb_objects()
+        global_v4_net = cmdb_objects.get_id("Global v4", ObjectType.LAYER3_NET)
+        return global_v4_net
+
+    def _is_time(self, time):
+        timestamp = timeparse.strftime('%s')
+
+    def _is_one_object(self, object):
+        required_keys = [
+            'id',
+            'title',
+            'sysid',
+            'objecttype',
+            'created',
+            'type_title',
+            'type_icon',
+            'status',
+            'cmdb_status',
+            'cmdb_status_title',
+            'image'
+        ]
+
+        optional_keys = [
+            'updated'
+        ]
+
+        keys = required_keys + optional_keys
+
+        for key in object.keys():
+            assert key in keys
+
+        for key in required_keys:
+            assert key in object.keys()
+
+        assert isinstance(object['id'], int)
+        self._is_id(object['id'])
+
+        assert isinstance(object['title'], str)
+
+        assert isinstance(object['sysid'], str)
+
+        assert isinstance(object['objecttype'], int)
+        assert self._is_id(object['objecttype'])
+
+        assert isinstance(object['type_title'], str)
+
+        assert isinstance(object['type_icon'], str)
+
+        assert isinstance(object['status'], int)
+        self._is_id(object['status'])
+        assert object['status'] in self._conditions
+
+        assert isinstance(object['created'], str)
+        #self._is_time(object['created'])
+
+        if "updated" in object.keys():
+            assert isinstance(object['updated'], str)
+            #self._is_time(object['updated'])
+
+        assert isinstance(object['cmdb_status'], int)
+        self._is_id(object['cmdb_status'])
+
+        assert isinstance(object['cmdb_status_title'], str)
+
+        assert isinstance(object['image'], str)
 
 class APITest(BaseTest):
     """Test API."""
