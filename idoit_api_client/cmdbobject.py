@@ -1,6 +1,7 @@
 """CMDBObject class for i-doit API client."""
 from idoit_api_client import Request
 from idoit_api_client.cmdbcategory import CMDBCategory
+from idoit_api_client.cmdbobjecttypecategories import CMDBObjectTypeCategories
 
 class CMDBObject(Request):
     """CMDBObject class for i-doit API client."""
@@ -152,11 +153,11 @@ class CMDBObject(Request):
         if "objecttype" not in object:
             raise Exception(f"Object {object_id} has no type")
 
-        cmdb_object_type_categories = CMDBObjectTypeCategories(self._api) # TODO: Port CMDBObjectTypeCategories
+        cmdb_object_type_categories = CMDBObjectTypeCategories(self._api)
 
         object += cmdb_object_type_categories.read(object["objecttype"])
 
-        cmdb_category = CMDBCategory(self._api) # TODO: Port CMDBCategory
+        cmdb_category = CMDBCategory(self._api)
 
         category_types = ["catg", "cats", "custom"]
 
