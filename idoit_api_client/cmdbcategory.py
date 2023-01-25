@@ -137,8 +137,47 @@ class CMDBCategory(Request):
     def batch_create(self):
         raise("Not implemented")
 
-    def batch_read(self):
-        raise("Not implemented")
+    def batch_read(self, object_ids, category_constants, status=2):
+        if not isinstance(object_ids, list):
+            raise Exception("Object IDs must be an array")
+        if len(object_ids) == 0:
+            raise Exception("Needed at least one object identifier")
+
+        if not isinstance(category_constants, list):
+            raise Exception("Category constants must be a list")
+        if len(category_constants) == 0:
+            raise Exception("Needed at least one category constant")
+
+        requests = []
+
+        for object_id in object_ids:
+            if not isinstance(object_id, int) or object_id < 0:
+                raise Exception("Each object identifier must be a positive integer")
+
+            for category_constant in category_constants:
+                if not isinstance(category_constant, str) or len(category_constant) == 0:
+                    raise Exception("Each category constant must be a non-empty string")
+
+                requests.append({
+                    "method": "cmdb.category.read",
+                    "params": {
+                        "objID": object_id,
+                        "category": category_constant,
+                        "status": status
+                    }
+                })
+
+        results = self._api.batch_request(requests)
+
+        expected_amount_of_results = len(object_ids) * len(category_constants)
+        actual_amount_of_results = len(results)
+        count_objects = len(object_ids)
+        count_category_constants = len(category_constants)
+
+        if actual_amount_of_results != expected_amount_of_results:
+            raise Exception(f"Requested entries for {count_objects} object(s), and {count_category_constants} category constant(s), but got {actual_amount_of_results} result(s)")
+
+        return results
 
     def batch_update(self):
         raise("Not implemented")

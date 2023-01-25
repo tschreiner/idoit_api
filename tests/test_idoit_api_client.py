@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Tests for `idoit_api_client` package."""
 
+import re
 import pytest
 from click.testing import CliRunner
 
@@ -60,6 +61,13 @@ class BaseTest:
         assert isinstance(value, str)
         id = int(value)
         assert id > 0
+
+    def _is_constant(self, value):
+        """Validate string as i-doit constant"""
+        assert len(value) > 0
+
+        assert re.match(r'/([A-Z0-9_]+)/', value)
+        assert re.match(r'/^([A-Z]+)/', value)
     
     def _generate_random_string(self):
         """Generate random string."""
@@ -162,7 +170,51 @@ class BaseTest:
         return global_v4_net
 
     def _is_time(self, time):
-        timestamp = timeparse.strftime('%s')
+        pass
+        # timestamp = timeparse.strftime('%s') # TODO: implement
+
+    def _is_object(self, object):
+        assert "id" in object
+        self._is_id(object["id"])
+
+        assert "title" in object
+        assert isinstance(object["title"], str)
+        assert len(object["title"]) > 0
+
+        assert "sysid" in object
+        assert isinstance(object["sysid"], str)
+        assert len(object["sysid"]) > 0
+
+        assert "type_title" in object
+        self._is_id(object["type_title"])
+
+        assert "created" in object
+        assert isinstance(object["created"], str)
+        self._is_time(object["created"])
+
+        if "updated" in object:
+            assert isinstance(object["updated"], str)
+            self._is_time(object["updated"])
+
+        assert "type_title" in object
+        assert isinstance(object["type_title"], str)
+        assert len(object["type_title"]) > 0
+
+        assert "type_group_title" in object
+        assert isinstance(object["type_group_title"], str)
+        assert len(object["type_group_title"]) > 0
+
+        assert "status" in object
+        self._is_id(object["status"])
+        assert object["status"] != None
+
+        assert "cmdb_status" in object
+        assert isinstance(object["cmdb_status"], int)
+        assert object["cmdb_status"] != None
+
+        assert "image" in object
+        assert isinstance(object["image"], str)
+        assert object["image"] != None
 
     def _is_one_object(self, object):
         required_keys = [

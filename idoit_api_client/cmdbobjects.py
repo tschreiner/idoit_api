@@ -57,7 +57,7 @@ class CMDBObjects(Request):
 
         if limit is not None:
             if offset is not None:
-                params["limit"] = offset+","+limit
+                params["limit"] = f"{offset},{limit}"
             else:
                 params["limit"] = limit
 

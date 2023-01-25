@@ -1,6 +1,8 @@
 from random import random
 from idoit_api_client import Constants, API
+from idoit_api_client.cmdbcategoryinfo import CMDBCategoryInfo
 from idoit_api_client.cmdbobject import CMDBObject
+from idoit_api_client.cmdbobjects import CMDBObjects
 from idoit_api_client.cmdbobjecttypes import CMDBObjectTypes
 from tests.test_idoit_api_client import BaseTest
 from tests.constants import Category, ObjectType
@@ -215,10 +217,46 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
         assert len(result) > 0
 
     def test_read_all(self):
+        self._set_up()
         # https://github.com/i-doit/api-client-php/blob/f3ec2be54943eb15e63cd1713a618c279253683a/tests/Idoit/APIClient/CMDBObjectTest.php#L370
         cmdb_objects = self._use_cmdb_objects()
-        cmdb_objects.read([], 10, 0, 'id', CMDBObjects.SORT_DESCENDING)
-        raise Exception("Not implemented")
+        objects = cmdb_objects.read([], 10, 0, 'id', CMDBObjects.SORT_DESCENDING)
+        object_ids = [object["id"] for object in objects]
+
+        category_info = CMDBCategoryInfo(self._api)
+        blacklisted_category_constants = category_info.get_virtual_category_constants()
+
+        for object_id in object_ids:
+            result = self._use_cmdb_object().read_all(object_id)
+
+            assert isinstance(result, dict)
+            self._is_object(result) #  TODO: implement
+            assert object_id == result["id"]
+
+            if "categories" not in result:
+                continue
+
+            assert isinstance(result["categories"], dict)
+
+            for category_constant, entries in result["categories"].items():
+                assert isinstance(category_constant, str)
+                #self._is_constant(category_constant) #  TODO: implement
+
+                assert category_constant not in blacklisted_category_constants
+
+                assert isinstance(entries, list)
+                
+                for index, entry in enumerate(entries):
+                    assert isinstance(index, int)
+                    assert index >= 0
+
+                    assert isinstance(entry, dict)
+                    #self._is_category_entry(entry) # TODO: implement
+
+                    if category_constant == Category.CATG__RELATION:
+                        continue
+
+                    assert object_id == int(entry["objID"])
 
     def test_read_all_from_non_existing_object():
         # https://github.com/i-doit/api-client-php/blob/f3ec2be54943eb15e63cd1713a618c279253683a/tests/Idoit/APIClient/CMDBObjectTest.php#L423

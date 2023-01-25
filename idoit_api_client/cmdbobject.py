@@ -1,6 +1,8 @@
 """CMDBObject class for i-doit API client."""
 from idoit_api_client import Request
 from idoit_api_client.cmdbcategory import CMDBCategory
+from idoit_api_client.cmdbcategoryinfo import CMDBCategoryInfo
+from idoit_api_client.cmdbobjects import CMDBObjects
 from idoit_api_client.cmdbobjecttypecategories import CMDBObjectTypeCategories
 
 class CMDBObject(Request):
@@ -68,6 +70,23 @@ class CMDBObject(Request):
         """
         return self._api.request("cmdb.object.read", {"id": id})
 
+    def read_all(self, object_id):
+        """Read all information about object including category entries
+
+        :param object_id: OObject identifier
+
+        :return:Multi-dimensional array
+        """
+        cmdb_objects = CMDBObjects(self._api)
+        objects = cmdb_objects.read({"ids": [object_id]}, None, None, None, None, True)
+
+        if len(objects) == 0:
+            raise Exception(f"Object not found by identifier {object_id}")
+        elif len(objects) == 1:
+            return objects[-1] 
+        else:
+            raise Exception(f"Found multiple objects by identifier {object_id}")
+
     def update(self, object_id, attributes):
         """Update common information about object
 
@@ -86,6 +105,8 @@ class CMDBObject(Request):
 
         if "success" not in result or result["success"] == False:
             raise Exception(f"Unable to update object {object_id}")
+
+        return self
 
     def archive(self, object_id):
         """Archive object
@@ -155,7 +176,7 @@ class CMDBObject(Request):
 
         cmdb_object_type_categories = CMDBObjectTypeCategories(self._api)
 
-        object += cmdb_object_type_categories.read(object["objecttype"])
+        object = {**object, **cmdb_object_type_categories.read_by_id(object["objecttype"])}
 
         cmdb_category = CMDBCategory(self._api)
 
@@ -169,5 +190,32 @@ class CMDBObject(Request):
                 continue
 
             category_constants = []
+
+            for object_category_type in object[category_type]:
+                if "const" not in object_category_type:
+                    raise Exception("Information about categories is broken. Constant is missing.")
+                category_constant = object_category_type["const"]
+                
+                if category_constant in blacklisted_category_constants:
+                    continue
+
+                object_category_type["entries"] = []
+
+                category_constants.append(category_constant)
+
+            category_entries = cmdb_category.batch_read([object_id], category_constants)
+
+            i = 0
+            for category_constant in category_constants:
+                index = -1
+                entries = []
+
+                for key, category in object[category_type].items():
+                    if category["const"] == category_constants[i]:
+                        index = key
+                        entries = category_entries[i]
+                        break
+
+                objects[category_type][index]["entries"] = entries
 
             # TODO: Continue porting from https://github.com/i-doit/api-client-php/blob/main/src/CMDBObject.php#L335

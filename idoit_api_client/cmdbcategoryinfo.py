@@ -126,6 +126,5 @@ class CMDBCategoryInfo(Request):
             'C__CATS__PDU_OVERVIEW',
             'C__CMDB__OBJTYPE__CONDUIT',
             'C__CATS__PERSON_GROUP_NAGIOS',
-            'C__CATS__PERSON_NAGIOS',
-            'C__CATG__NETWORK_PORT_OVERVIEW'
+            'C__CATS__PERSON_NAGIOS'
         ]
