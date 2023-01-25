@@ -191,31 +191,36 @@ class CMDBObject(Request):
 
             category_constants = []
 
+            i = 0
             for object_category_type in object[category_type]:
                 if "const" not in object_category_type:
                     raise Exception("Information about categories is broken. Constant is missing.")
-                category_constant = object_category_type["const"]
+                category_constant = object[category_type][i]["const"]
                 
                 if category_constant in blacklisted_category_constants:
                     continue
 
-                object_category_type["entries"] = []
+                object[category_type][i]["entries"] = []
 
                 category_constants.append(category_constant)
+                i += 1
 
             category_entries = cmdb_category.batch_read([object_id], category_constants)
 
             i = 0
-            for category_constant in category_constants:
+            for category_entry in category_entries:
                 index = -1
                 entries = []
 
-                for key, category in object[category_type].items():
+                ii = 0
+                for category in object[category_type]:
                     if category["const"] == category_constants[i]:
-                        index = key
+                        index = ii
                         entries = category_entries[i]
                         break
+                    ii = ii + 1
 
-                objects[category_type][index]["entries"] = entries
+                object[category_type][index]["entries"] = entries
+                i = i + 1
 
-            # TODO: Continue porting from https://github.com/i-doit/api-client-php/blob/main/src/CMDBObject.php#L335
+        return object
