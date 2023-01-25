@@ -258,9 +258,13 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
 
                     assert object_id == int(entry["objID"])
 
-    def test_read_all_from_non_existing_object():
-        # https://github.com/i-doit/api-client-php/blob/f3ec2be54943eb15e63cd1713a618c279253683a/tests/Idoit/APIClient/CMDBObjectTest.php#L423
-        raise Exception("Not Implemented")
+    def test_read_all_from_non_existing_object(self):
+        cmdb_object = self._use_cmdb_object()
+        try:
+            cmdb_object.read_all(self._generate_random_id())
+            assert False
+        except Exception:
+            assert True
 
     def test_upsert(self):
         title = self._generate_random_string()

@@ -5,6 +5,8 @@ import re
 import pytest
 from click.testing import CliRunner
 
+import sys
+
 import random
 import string
 #import datetime
@@ -72,6 +74,11 @@ class BaseTest:
     def _generate_random_string(self):
         """Generate random string."""
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
+    def _generate_random_id(self):
+        """Generate random id."""
+        maxint = sys.maxsize
+        return random.randint(1, maxint)
 
     def _create_server(self):
         cmdb_object = self._use_cmdb_object()
