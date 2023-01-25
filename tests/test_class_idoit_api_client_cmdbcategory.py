@@ -7,8 +7,10 @@ from tests.constants import Category, ObjectType
 import string
 import random
 
+from tests.test_idoit_api_client import BaseTest
 
-class TestClassIdoitAPIClientCMDBCategory:
+
+class TestClassIdoitAPIClientCMDBCategory(BaseTest):
     """Test class idoit_api_client.cmdbcategory.CMDBCategory"""
 
     config = {
@@ -114,8 +116,10 @@ class TestClassIdoitAPIClientCMDBCategory:
             assert value == entry[attribute]["title"]
 
     def test_update(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.update()
+        object_id = self._create_server()
+        cmdb_object = self._use_cmdb_object()
+        result = cmdb_object.update(object_id, {"title": "Anne Admin"})
+        assert isinstance(result, CMDBObject)
 
     def test_archive(self):
         cmdb_category = self._use_cmdb_category()
@@ -124,6 +128,22 @@ class TestClassIdoitAPIClientCMDBCategory:
     def test_delete(self):
         cmdb_category = self._use_cmdb_category()
         cmdb_category.delete()
+
+    def test_create(self):
+        object_id = self._create_server()
+        cmdb_category = self._use_cmdb_category()
+        
+        entry_id = cmdb_category.create(object_id, Category.CATG__IP, {
+            "net": self._get_ipv4_net(),
+            "active": 0,
+            "primary": 0,
+            "net_type": 1,
+            "ipv4_assignment": 2,
+            "ipv4_address": self._generate_ipv4_address(),
+            "description": self._generate_description()
+        })
+        
+        assert entry_id >= 1    
 
     def test_purge(self):
         cmdb_category = self._use_cmdb_category()
@@ -152,3 +172,9 @@ class TestClassIdoitAPIClientCMDBCategory:
     def test_clear(self):
         cmdb_category = self._use_cmdb_category()
         cmdb_category.clear()
+
+    def test_create_archived_object(self):
+        cmdb_object = self._use_cmdb_object()
+        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {"status": 3})
+        self._is_id(object_id)
+        self._is_archived(object_id)

@@ -51,7 +51,7 @@ class CMDBCategory(Request):
 
         result = self._api.request("cmdb.category.create", params)
 
-        return self.require_success_for(result)
+        return result["id"]
 
     def read(self, object_id, category_const, status=2):
         """Read one or more category entries for a specific object (works with both single- and multi-valued categories).
