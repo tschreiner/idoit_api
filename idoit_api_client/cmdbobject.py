@@ -224,3 +224,31 @@ class CMDBObject(Request):
                 i = i + 1
 
         return object
+
+
+    def upsert(self, type, title, attributes={}):
+        """Create new object or fetch existing one based on its title and type.
+
+        :param type: Object type identifier or its constant
+        :param title: Object title
+        :param attributes: (Optional) additional common attributes ('category', 'purpose', 'cmdb_status', 'description')
+
+        :return Object identifier"""
+        cmdb_objects = CMDBObjects(self._api)
+
+        filter = {
+            "title": title,
+            "type": type
+        }
+
+        result = cmdb_objects.read(filter)
+
+        if len(result) == 0:
+            return self.create(type, title, attributes)
+        elif len(result) == 1:
+            if result[0] is None or result[0]["id"] is None:
+                raise Exception("Bad result")
+            return result[0]["id"]
+        else:
+            number_of_objects = len(result)
+            raise Exception(f"Found {number_of_objects} objects")

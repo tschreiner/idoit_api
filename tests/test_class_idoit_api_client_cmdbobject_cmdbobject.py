@@ -263,5 +263,17 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
         raise Exception("Not Implemented")
 
     def test_upsert(self):
-        # https://github.com/i-doit/api-client-php/blob/f3ec2be54943eb15e63cd1713a618c279253683a/tests/Idoit/APIClient/CMDBObjectTest.php#L432
-        raise Exception("not implemented")
+        title = self._generate_random_string()
+
+        # Exists:
+        object_id = self._use_cmdb_object().create(ObjectType.SERVER, title)
+        result = self._use_cmdb_object().upsert(ObjectType.SERVER, title, {"purpose": "Test"})
+
+        assert isinstance(result, int)
+        assert object_id == result
+
+        # Does not exist:
+        result = self._use_cmdb_object().upsert(ObjectType.SERVER, self._generate_random_string())
+
+        assert isinstance(result, int)
+        assert result > 0
