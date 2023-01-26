@@ -42,6 +42,37 @@ Implemented Objects and Methods
 |--------|--------|-------------|-------------------|
 | CMDBObjectType | read | Yes | Yes |
 
+Installation
+------------
+
+Option 1: pip install from PyPI
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install ``idoit_api_client`` using ``pip`` from PyPI (recommended for most users)::
+
+    $ pip install idoit_api_client
+
+Option 2: pip install from GitHub
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install ``idoit_api_client`` using ``pip`` from GitHub::
+    
+        $ pip install git+https://github.com/tschreiner/idoit_api.git@main
+
+Option 3: Install ``idoit_api_client`` from source::
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $ git clone
+    $ cd idoit_api_client
+    $ python setup.py install
+
+Option 4: Install ``idoit_api_client`` from source (in development mode)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $ git clone https://github.com/tschreiner/idoit_api.git
+    $ cd idoit_api_client
+    $ python setup.py develop
+
 Usage
 -----
 
