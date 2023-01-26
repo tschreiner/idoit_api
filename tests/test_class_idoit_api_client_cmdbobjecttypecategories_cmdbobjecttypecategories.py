@@ -86,6 +86,6 @@ class TestClassIdoitAPIClientCMDBObjectTypeCategoriesCMDBObjectTypeCategories(Ba
         :param categories: List of categories."""
         assert isinstance(categories, dict)
 
-        for category in categories.keys():
-            assert isinstance(categories[category], list)
-            assert len(categories[category]) > 0
+        for key, category in categories.items():
+            assert isinstance(category, list)
+            assert len(category) > 0

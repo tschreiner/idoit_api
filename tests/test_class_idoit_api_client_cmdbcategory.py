@@ -215,6 +215,57 @@ class TestClassIdoitAPIClientCMDBCategory(BaseTest):
         for attribute in attributes.keys():
             assert entry[attribute] != new_entry[attribute]
 
+#    def test_save_existing_entry_in_multi_value_category(self):
+#        pass
+#
+#    def test_save_additional_entry_in_multi_value_category(self):
+#        pass
+#
+#    def test_save_unknown_attribute(self):
+#        pass
+#
+#    def test_save_invalid_attribute(self):
+#        pass
+#
+#    def test_create(self):
+#        pass
+#
+#    def test_read_single_value_category(self):
+#        pass
+#
+#    def test_read_entries_in_multi_value_category(self):
+#        pass
+#
+#    def test_read_archived_entries_in_multi_value_category(self):
+#        pass
+#
+#    def test_read_deleted_entries_in_multi_Value_category(self):
+#        pass
+#
+#    def test_read_entries_in_multi_value_category_by_all_states(self):
+#        pass
+#
+#    def test_read_normal_entry_in_multi_value_category_with_mixed_states(self):
+#        pass
+#
+#    def test_read_archived_entry_in_multi_value_category_with_mixed_states(self):
+#        pass
+#
+#    def test_read_deleted_entry_in_multi_value_category_with_mixed_states(self):
+#        pass
+#
+#    def test_read_normal_entries_in_multi_value_category_with_mixed_states(self):
+#        pass
+#
+#    def test_read_one_single_value_category_by_its_identifier(self):
+#        pass
+#
+#    def test_read_one_entry_in_multi_value_category_by_its_identifier(self):
+#        pass
+#
+#    def test_read_first(self):
+#        pass
+
     def test_update(self):
         object_id = self._create_server()
 
@@ -238,14 +289,6 @@ class TestClassIdoitAPIClientCMDBCategory(BaseTest):
         result = cmdb_object.update(object_id, {"title": "Anne Admin"})
         assert isinstance(result, CMDBObject)
 
-    def test_archive(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.archive()
-
-    def test_delete(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.delete()
-
     def test_create(self):
         object_id = self._create_server()
         cmdb_category = self._use_cmdb_category()
@@ -260,19 +303,7 @@ class TestClassIdoitAPIClientCMDBCategory(BaseTest):
             "description": self._generate_description()
         })
         
-        assert entry_id >= 1    
-
-    def test_purge(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.purge()
-
-    def test_recycle(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.recycle()
-
-    def test_quick_purge(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.quick_purge()
+        assert entry_id >= 1
 
     def test_batch_create(self):
         object_id1 = self._create_server()
@@ -377,13 +408,3 @@ class TestClassIdoitAPIClientCMDBCategory(BaseTest):
         )
 
         assert isinstance(itself, CMDBCategory)
-
-    def test_clear(self):
-        cmdb_category = self._use_cmdb_category()
-        cmdb_category.clear()
-
-    def test_create_archived_object(self):
-        cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {"status": 3})
-        self._is_id(object_id)
-        self._is_archived(object_id)

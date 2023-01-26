@@ -138,20 +138,88 @@ class CMDBCategory(Request):
 
         return self
 
-    def archive(self):
-        raise("Not implemented")
+    def archive(self, object_id, category_const, entry_id):
+        """Archive entry in a multi-value category for a specific object.
 
-    def delete(self):
-        raise("Not implemented")
+        :param object_id: Object identifier
+        :param category_const: Category constant
+        :param entry_id: Entry identifier"""
 
-    def purge(self):
-        raise("Not implemented")
+        self._api.request("cmdb.category.archive", {
+            "object": object_id,
+            "category": category_const,
+            "entry": entry_id
+        })
 
-    def recycle(self):
-        raise("Not implemented")
+    def delete(self, object_id, category_const, entry_id):
+        """Mark entry in a multi-value category for a specific object as deleted.
 
-    def quick_purge(self):
-        raise("Not implemented")
+        :param object_id: Object identifier
+        :param category_const: Category constant
+        :param entry_id: Entry identifier
+
+        :return returns itself"""
+        self._api.request("cmdb.category.delete", {
+            "object": object_id,
+            "category": category_const,
+            "entry": entry_id
+        })
+
+        return self
+
+    def purge(self, object_id, category_const, entry_id):
+        """Purge entry in a single- or multi-value category for a specific object.
+
+        :param object_id: Object identifier
+        :param category_const: Category constant
+        :param entry_id: Entry identifier (only needed for multi-valued categories)
+
+        :return returns itself"""
+        params = {
+            "object": object_id,
+            "category": category_const
+        }
+
+        if entry_id is not None:
+            params["entry"] = entry_id
+
+        self._api.request("cmdb.category.purge", params)
+
+        return self
+
+    def recycle(self, object_id, category_const, entry_id):
+        """Restore entry in a multi-value category for a specific object to "normal" state
+
+        :param object_id: Object identifier
+        :param category_const: Category constant
+        :param entry_id: Entry identifier
+
+        :return returns itself"""
+        self._api.request("cmdb.category.recycle", {
+            "object": object_id,
+            "category": category_const,
+            "entry": entry_id
+        })
+
+        return self
+
+    def quick_purge(self, object_id, category_const, entry_id):
+        """Purge entry in a multi-value category for a specific object.
+
+        :param object_id: Object identifier
+        :param category_const: Category constant
+        :param entry_id: Entry identifier
+
+        :return returns itself"""
+        result = self._api.request("cmdb.category.quickpurge", {
+            "object": object_id,
+            "category": category_const,
+            "entry": entry_id
+        })
+
+        self.require_success_without_identifier(result)
+
+        return self
 
     def batch_create(self, object_ids, category_const, attributes):
         """Create multiple entries for a specific category and one or more objects.
