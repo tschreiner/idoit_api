@@ -20,7 +20,7 @@ i-doit API Client for Python
 
 
 
-i-doit API Client for Python. Translated from the original PHP source.
+i-doit API Client for Python. Port of the original PHP i-doit API Client.
 
 
 * Free software: GNU General Public License v3
