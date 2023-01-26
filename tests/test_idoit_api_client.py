@@ -70,7 +70,7 @@ class BaseTest:
 
         assert re.match(r'/([A-Z0-9_]+)/', value)
         assert re.match(r'/^([A-Z]+)/', value)
-    
+
     def _generate_random_string(self):
         """Generate random string."""
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -169,6 +169,40 @@ class BaseTest:
     def _generate_ipv4_address(self):
         """Generate random IPv4 address."""
         return ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
+
+    def _define_model(self, object_id):
+        cmdb_category = self._use_cmdb_category()
+        return cmdb_category.create(object_id, Category.CATG__MODEL, {
+            "manufacturer": self._generate_random_string(),
+            "title": self._generate_random_string(),
+            "serial": self._generate_random_string(),
+            "description": self._generate_random_string(),
+        })
+
+    def _add_ipv4(self, object_id, subnet_id=None):
+        """Add random IPv4 address to object.
+
+        :param object_id: Object identifier
+        :param subnet_id: Use this subnet, otherwise fall back to "Global v4"
+
+        :return: Category entry identifier
+        """
+        cmdb_category = self._use_cmdb_category()
+        params_net = None
+        if subnet_id is not None:
+            params_net = subnet_id
+        else:
+            params_net = self._get_ipv4_net()
+        result_id = cmdb_category.create(object_id, Category.CATG__IP, {
+            "net": params_net,
+            "active": random.randrange(0, 1),
+            "primary": random.randrange(0, 1),
+            "net_type": 1,  # IPv4
+            "ipv4_assignment": 2,  # Static
+            "ipv4_address": self._generate_ipv4_address(),
+            "description": self._generate_description()
+        })
+        return result_id
 
     def _get_ipv4_net(self):
         """Find object "Global v4"""
