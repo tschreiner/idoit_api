@@ -21,7 +21,7 @@ class CMDBObjects(Request):
                 "params": object
             })
 
-        result = self._api.batch_request(requests)
+        results = self._api.batch_request(requests)
 
         object_ids = []
 
@@ -84,6 +84,24 @@ class CMDBObjects(Request):
         }
 
         if categories is not False:
+            params["categories"] = categories
+
+        return self._api.request("cmdb.objects.read", params)
+
+    def read_by_type(self, object_type, categories=None):
+        """Fetch objects by their object type
+
+        :param int object_type Object type identifier
+        :param bool|array categories Also fetch category entries; add a list of category constants as array of strings or true for all assigned categories, otherwise false for none; defaults to false
+        
+        :return list Indexed array of associative arrays"""
+        params = {
+            "filter": {
+                "type": object_type
+            }
+        }
+
+        if categories is not False and categories is not None:
             params["categories"] = categories
 
         return self._api.request("cmdb.objects.read", params)
