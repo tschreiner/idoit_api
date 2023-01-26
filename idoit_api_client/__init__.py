@@ -610,23 +610,31 @@ class Request:
 
         return result["id"]
 
-    def require_success_without_identifier(self, result):
+    def require_success_without_identifier(self, result, ignore_depricated=False):
         """Check for success but ignore identifier.
 
         :param result: Response from API request
         :type result: dict
         """
         if "success" not in result or type(result["success"]) is not True:
+            if ignore_depricated == True and "message" in result and "This method is deprecated and will be removed in a feature release." in result["message"]:
+                return
             if "message" in result:
                 raise Exception(f"Bad result: {result['message']}")
             else:
                 raise Exception("Bad result.")
 
-    def require_success_for_all(self, results):
+    def require_success_for_all(self, results, ignore_deprecated=False):
         """Check for success for all results.
 
         :param results: Response from API request
         :type results: list
         """
         for result in results:
-            self.require_success_without_identifier(result)
+            self.require_success_without_identifier(result, ignore_depricated=ignore_deprecated)
+
+    def _require_success_for_all(self, result, ignore_deprecated=False):
+        self.require_success_for_all(result, ignore_deprecated=ignore_deprecated)
+
+    def _require_success_without_identifier(self, result, ignore_deprecated=False):
+        self.require_success_without_identifier(result, ignore_deprecated)

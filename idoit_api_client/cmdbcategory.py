@@ -116,8 +116,27 @@ class CMDBCategory(Request):
 
         return entries[0]
 
-    def update(self):
-        raise("Not implemented")
+    def update(self, object_id, category_const, attributes, entry_id=None):
+        """Update category entry for a specific object.
+
+        :param object_id: Object identifier
+        :param category_const: Category constant
+        :param attributes: Attributes as key-value pairs
+        :param entry_id: Entry identifier (only needed for multi-valued categories)
+
+        :return returns itself"""
+        if entry_id is not None:
+            attributes["category_id"] = entry_id
+
+        result = self._api.request("cmdb.category.update", {
+            "objID": object_id,
+            "category": category_const,
+            "data": attributes
+        })
+
+        self._require_success_without_identifier(result, True)
+
+        return self
 
     def archive(self):
         raise("Not implemented")
@@ -134,8 +153,42 @@ class CMDBCategory(Request):
     def quick_purge(self):
         raise("Not implemented")
 
-    def batch_create(self):
-        raise("Not implemented")
+    def batch_create(self, object_ids, category_const, attributes):
+        """Create multiple entries for a specific category and one or more objects.
+
+        :param object_ids List of object identifiers as integers
+        :param category_const Category constant
+        :param attributes Indexed array of attributes as key-value pairs
+
+        :return List of entry identifiers as integers"""
+        entry_ids = []
+
+        requests = []
+
+        for object_id in object_ids:
+            for data in attributes:
+                params = {
+                    "objID": object_id,
+                    "data": data,
+                    "category": category_const
+                }
+
+                requests.append({
+                    "method": "cmdb.category.create",
+                    "params": params
+                })
+
+        result = self._api.batch_request(requests)
+        #  Do not check 'id' because in a batch request it is always NULL:
+        for entry in result:
+            if "success" not in entry or entry["success"] is not True:
+                if "message" in entry:
+                    raise Exception(f"Bad result: {entry['message']}")
+                raise Exception("Bad result")
+
+            entry_ids.append(int(entry["id"]))
+
+        return entry_ids
 
     def batch_read(self, object_ids, category_constants, status=2):
         if not isinstance(object_ids, list):
@@ -179,10 +232,32 @@ class CMDBCategory(Request):
 
         return results
 
-    def batch_update(self):
-        raise("Not implemented")
+    def batch_update(self, object_ids, category_const, attributes):
+        """Update single-value category for one or more objects.
+
+        :param object_ids List of object identifiers as integers
+        :param category_const Category constant
+        :param attributes Attributes as key-value pairs
+
+        :return returns itself"""
+        requests = []
+
+        for object_id in object_ids:
+            requests.append({
+                "method": "cmdb.category.update",
+                "params": {
+                    "objID": object_id,
+                    "category": category_const,
+                    "data": attributes
+                }
+            })
+
+        results = self._api.batch_request(requests)
+
+        self._require_success_for_all(results, ignore_deprecated=True)
+
+        return self
 
     def clear(self):
         raise("Not implemented")
 
-    
