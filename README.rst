@@ -57,10 +57,12 @@ Option 2: pip install from GitHub
 
 Install ``idoit_api_client`` using ``pip`` from GitHub::
     
-        $ pip install git+https://github.com/tschreiner/idoit_api.git@main
+    $ pip install git+https://github.com/tschreiner/idoit_api.git@main
 
-Option 3: Install ``idoit_api_client`` from source::
+Option 3: Install ``idoit_api_client`` from source
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install ``idoit_api_client`` from source::
 
     $ git clone
     $ cd idoit_api_client
@@ -68,6 +70,8 @@ Option 3: Install ``idoit_api_client`` from source::
 
 Option 4: Install ``idoit_api_client`` from source (in development mode)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install ``idoit_api_client`` from source (in development mode)::
 
     $ git clone https://github.com/tschreiner/idoit_api.git
     $ cd idoit_api_client
