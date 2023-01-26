@@ -2,7 +2,7 @@
 
 __author__ = """Tedd Schreiner"""
 __email__ = 'info@teddschreiner.de'
-__version__ = '0.0.5'
+__version__ = '0.1.0'
 
 
 from enum import Enum
