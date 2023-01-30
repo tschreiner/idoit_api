@@ -12,6 +12,9 @@ i-doit API Client for Python
         :target: https://idoit-api.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+
 i-doit API Client for Python. Port of the original PHP i-doit API Client.
 
 
@@ -48,7 +51,7 @@ Option 2: pip install from GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Install ``idoit_api_client`` using ``pip`` from GitHub::
-    
+
     $ pip install git+https://github.com/tschreiner/idoit_api.git@main
 
 Option 3: Install ``idoit_api_client`` from source
