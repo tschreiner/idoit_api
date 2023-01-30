@@ -2,6 +2,7 @@
 
 from idoit_api_client import Request
 
+
 class CMDBObjects(Request):
     SORT_ASCENDING = "asc"
     SORT_DESCENDING = "desc"
@@ -16,10 +17,7 @@ class CMDBObjects(Request):
         requests = []
 
         for object in objects:
-            requests.append({
-                "method": "cmdb.object.create",
-                "params": object
-            })
+            requests.append({"method": "cmdb.object.create", "params": object})
 
         results = self._api.batch_request(requests)
 
@@ -30,7 +28,15 @@ class CMDBObjects(Request):
 
         return object_ids
 
-    def read(self, filter={}, limit=None, offset=None, order_by=None, sort=None, categories=None):
+    def read(
+        self,
+        filter={},
+        limit=None,
+        offset=None,
+        order_by=None,
+        sort=None,
+        categories=None,
+    ):
         """Fetch objects.
 
         :param dict filter (Optional) Filter; use any combination of 'ids' (array of object identifiers),
@@ -77,11 +83,7 @@ class CMDBObjects(Request):
         or true for all assigned categories, otherwise false for none; defaults to false
 
         :return list Indexed array of associative arrays"""
-        params = {
-            "filter": {
-                "ids": object_ids
-            }
-        }
+        params = {"filter": {"ids": object_ids}}
 
         if categories is not False:
             params["categories"] = categories
@@ -93,13 +95,9 @@ class CMDBObjects(Request):
 
         :param int object_type Object type identifier
         :param bool|array categories Also fetch category entries; add a list of category constants as array of strings or true for all assigned categories, otherwise false for none; defaults to false
-        
+
         :return list Indexed array of associative arrays"""
-        params = {
-            "filter": {
-                "type": object_type
-            }
-        }
+        params = {"filter": {"type": object_type}}
 
         if categories is not False and categories is not None:
             params["categories"] = categories
@@ -113,9 +111,7 @@ class CMDBObjects(Request):
         :param str type (Optional) type constant
 
         :return int Object identifier"""
-        filter = {
-            "title": title
-        }
+        filter = {"title": title}
 
         if type is not None:
             filter["type"] = type

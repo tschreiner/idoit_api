@@ -2,6 +2,7 @@
 
 from idoit_api_client import API, Constants, Request
 
+
 class CMDBObjectTypes(Request):
     """Requests for API namespace 'cmdb.object_types'"""
 
@@ -23,9 +24,9 @@ class CMDBObjectTypes(Request):
             "filter": {
                 "id": object_type,
             },
-            "countobjects": True
+            "countobjects": True,
         }
-        
+
         return self._api.request("cmdb.object_types.read", params)[-1]
 
     def batch_read(self, object_types):
@@ -39,9 +40,9 @@ class CMDBObjectTypes(Request):
             "filter": {
                 "ids": object_types,
             },
-            "countobjects": True
+            "countobjects": True,
         }
-        
+
         return self._api.request("cmdb.object_types", params)
 
     def read_by_title(self, title):
@@ -55,7 +56,6 @@ class CMDBObjectTypes(Request):
             "filter": {
                 "title": title,
             },
-            "countobjects": True
+            "countobjects": True,
         }
         return self._api.request("cmdb.object_types", params)[-1]
-    

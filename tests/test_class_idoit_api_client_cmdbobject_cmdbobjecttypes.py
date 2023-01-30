@@ -4,13 +4,15 @@ from idoit_api_client.cmdbobjecttypes import CMDBObjectTypes
 from tests.test_idoit_api_client import BaseTest
 from tests.constants import Category, ObjectType
 
+
 class TestClassIdoitAPIClientCMDBObjectCMDBObjectTypes(BaseTest):
     """Test class idoit_api_client.cmdbobject.CMDBObjectTypes"""
+
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
     }
 
     def _setUp(self) -> None:
@@ -44,7 +46,9 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObjectTypes(BaseTest):
 
     def test_batch_read(self):
         self._setUp()
-        result = self._instance.batch_read([ObjectType.SERVER, ObjectType.VIRTUAL_SERVER])
+        result = self._instance.batch_read(
+            [ObjectType.SERVER, ObjectType.VIRTUAL_SERVER]
+        )
         assert isinstance(result, list)
         assert len(result) > 0
 

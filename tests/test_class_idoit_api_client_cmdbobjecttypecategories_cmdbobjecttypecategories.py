@@ -3,6 +3,7 @@ from idoit_api_client.cmdbobjecttypecategories import CMDBObjectTypeCategories
 from idoit_api_client.cmdbobjecttypes import CMDBObjectTypes
 from tests.test_idoit_api_client import BaseTest
 
+
 class TestClassIdoitAPIClientCMDBObjectTypeCategoriesCMDBObjectTypeCategories(BaseTest):
     _instance = None
     _object_type_ids = []
@@ -10,7 +11,7 @@ class TestClassIdoitAPIClientCMDBObjectTypeCategoriesCMDBObjectTypeCategories(Ba
 
     def _set_up(self) -> None:
         api = API(self.config)
-        #self._instance = CMDBCategory(api)
+        # self._instance = CMDBCategory(api)
         config = {
             Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
             Constants.KEY: "c1ia5q",
@@ -39,7 +40,7 @@ class TestClassIdoitAPIClientCMDBObjectTypeCategoriesCMDBObjectTypeCategories(Ba
         self._set_up()
 
         categories = []
-        
+
         for object_type_id in self._object_type_ids:
             categories.append(self._instance.read_by_id(object_type_id))
 
@@ -50,16 +51,16 @@ class TestClassIdoitAPIClientCMDBObjectTypeCategoriesCMDBObjectTypeCategories(Ba
         self._set_up()
 
         categories = []
-        
+
         for object_type_const in self._object_type_consts:
             categories.append(self._instance.read_by_const(object_type_const))
 
-        self._check_assigned_categories(categories)        
+        self._check_assigned_categories(categories)
 
     def test_batch_read_by_identifier(self):
         """Test batch read by identifier."""
         self._set_up()
-        
+
         batch_result = self._instance.batch_read_by_id(self._object_type_ids)
 
         assert isinstance(batch_result, list)
@@ -71,7 +72,7 @@ class TestClassIdoitAPIClientCMDBObjectTypeCategoriesCMDBObjectTypeCategories(Ba
     def test_batch_read_by_constant(self):
         """Test batch read by constant."""
         self._set_up()
-        
+
         batch_result = self._instance.batch_read_by_const(self._object_type_consts)
 
         assert isinstance(batch_result, list)

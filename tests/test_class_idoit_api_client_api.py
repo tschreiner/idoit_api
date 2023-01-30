@@ -3,13 +3,15 @@ from click.testing import CliRunner
 
 from idoit_api_client import Constants, API
 
+
 class TestClassIdoitAPIClientAPI:
     """Test class idoit_api_client.API"""
+
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
     }
 
     def test_constructor(self):
@@ -52,22 +54,21 @@ class TestClassIdoitAPIClientAPI:
         api = API(self.config)
         api.connect()
         api.login()
-        result = api.request('cmdb.category.read', {
-            'objID': 1,
-            'category': 'C__CATG__GLOBAL'
-        })
+        result = api.request(
+            "cmdb.category.read", {"objID": 1, "category": "C__CATG__GLOBAL"}
+        )
         assert type(result) is list
 
     def test_count_requests(self):
         """Test count_requests."""
         api = API(self.config)
 
-        api.request('idoit.version')
+        api.request("idoit.version")
         count = api.count_requests()
         assert type(count) is int
         assert count == 1
 
-        api.request('idoit.version')
+        api.request("idoit.version")
         count = api.count_requests()
         assert type(count) is int
         assert count == 2
@@ -76,17 +77,12 @@ class TestClassIdoitAPIClientAPI:
         """Test batch_request."""
         api = API(self.config)
         object_id = 1
-        result = api.batch_request([
-            {
-                'method': 'idoit.version'
-            },
-            {
-                'method': 'cmdb.object.read',
-                'params': {
-                    'id': object_id
-                }
-            }
-        ])
+        result = api.batch_request(
+            [
+                {"method": "idoit.version"},
+                {"method": "cmdb.object.read", "params": {"id": object_id}},
+            ]
+        )
         assert type(result) is list
         assert len(result) == 2
         for result in result:

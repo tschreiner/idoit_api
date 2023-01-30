@@ -9,16 +9,16 @@ from tests.constants import Category, ObjectType
 
 import random
 
+
 class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
     """Test class idoit_api_client.cmdbobject.CMDBObject"""
-    config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
-    }
 
-        
+    config = {
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
+    }
 
     def test_constructor(self):
         """Test constructor."""
@@ -29,7 +29,9 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
     def test_create(self):
         """Test create."""
         cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create('C__OBJTYPE__SERVER', self._generate_random_string())
+        object_id = cmdb_object.create(
+            "C__OBJTYPE__SERVER", self._generate_random_string()
+        )
         assert isinstance(object_id, int)
         assert self._is_id(object_id)
 
@@ -42,12 +44,16 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
         object_types = CMDBObjectTypes(api)
         object_types_result = object_types.read()
         print("debug: object_types_result = {}".format(object_types_result))
-        object_type_constants = [object_type['const'] for object_type in object_types_result]
+        object_type_constants = [
+            object_type["const"] for object_type in object_types_result
+        ]
         print("debug: object_type_constants = {}".format(object_type_constants))
         cmdb_object = CMDBObject(api)
         for object_type_constant in object_type_constants:
             print("debug: object_type_constant = {}".format(object_type_constant))
-            object_id = cmdb_object.create(object_type_constant, self._generate_random_string())
+            object_id = cmdb_object.create(
+                object_type_constant, self._generate_random_string()
+            )
             assert object_id is not None
             print("debug: object_id = {}".format(object_id))
         api.logout()
@@ -59,53 +65,53 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
             ObjectType.SERVER,
             self._generate_random_string(),
             {
-                'category': 'Test',
-                'cmdb_status': 0,
-                'description': self._generate_description(),
-                'purporse': 'for reasons',
-                'sysid': self._generate_random_string(),
-            }
+                "category": "Test",
+                "cmdb_status": 0,
+                "description": self._generate_description(),
+                "purporse": "for reasons",
+                "sysid": self._generate_random_string(),
+            },
         )
         assert isinstance(object_id, int)
         assert self._is_id(object_id)
 
     def test_create_normal_object(self):
         cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {
-            "status": 2
-        })
+        object_id = cmdb_object.create(
+            ObjectType.SERVER, self._generate_random_string(), {"status": 2}
+        )
         self._is_id(object_id)
         self._is_normal(object_id)
 
     def test_create_archived_object(self):
         cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {
-            "status": 3
-        })
+        object_id = cmdb_object.create(
+            ObjectType.SERVER, self._generate_random_string(), {"status": 3}
+        )
         self._is_id(object_id)
         self._is_archived(object_id)
 
     def test_create_deleted_object(self):
         cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {
-            "status": 4
-        })
+        object_id = cmdb_object.create(
+            ObjectType.SERVER, self._generate_random_string(), {"status": 4}
+        )
         self._is_id(object_id)
         self._is_deleted(object_id)
 
     def test_create_template(self):
         cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {
-            "status": 6
-        })
+        object_id = cmdb_object.create(
+            ObjectType.SERVER, self._generate_random_string(), {"status": 6}
+        )
         self._is_id(object_id)
         self._is_template(object_id)
 
     def test_create_mass_change_template(self):
         cmdb_object = self._use_cmdb_object()
-        object_id = cmdb_object.create(ObjectType.SERVER, self._generate_random_string(), {
-            "status": 7
-        })
+        object_id = cmdb_object.create(
+            ObjectType.SERVER, self._generate_random_string(), {"status": 7}
+        )
         self._is_id(object_id)
         self._is_mass_change_template(object_id)
 
@@ -113,10 +119,12 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
         cmdb_object = self._use_cmdb_object()
 
         categories = {
-            Category.CATG__MODEL: [{
-                "manufacturer": self._generate_random_string(),
-                "title": self._generate_random_string()
-            }],
+            Category.CATG__MODEL: [
+                {
+                    "manufacturer": self._generate_random_string(),
+                    "title": self._generate_random_string(),
+                }
+            ],
             Category.CATG__IP: [
                 {
                     "net": self._get_ipv4_net(),
@@ -125,7 +133,7 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
                     "net_type": 1,
                     "ipv4_assignment": 2,
                     "ipv4_address": self._generate_ipv4_address(),
-                    "description": self._generate_description()
+                    "description": self._generate_description(),
                 },
                 {
                     "net": self._get_ipv4_net(),
@@ -134,15 +142,13 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
                     "net_type": 1,
                     "ipv4_assignment": 2,
                     "ipv4_address": self._generate_ipv4_address(),
-                    "description": self._generate_description()
-                }
-            ]
+                    "description": self._generate_description(),
+                },
+            ],
         }
 
         result = cmdb_object.create_with_categories(
-            ObjectType.SERVER,
-            self._generate_random_string(),
-            categories
+            ObjectType.SERVER, self._generate_random_string(), categories
         )
 
         assert isinstance(result, dict)
@@ -172,24 +178,32 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
         object_id = result["id"]
         model_entry_id = result["categories"][Category.CATG__MODEL][0]
         first_ip_entry_id = result["categories"][Category.CATG__IP][0]
-        second_ip_entry_id = result["categories"][Category.CATG__IP][1] # bug in original code: https://github.com/i-doit/api-client-php/blob/main/tests/Idoit/APIClient/CMDBObjectTest.php
+        second_ip_entry_id = result["categories"][Category.CATG__IP][
+            1
+        ]  # bug in original code: https://github.com/i-doit/api-client-php/blob/main/tests/Idoit/APIClient/CMDBObjectTest.php
 
         cmdb_category = self._use_cmdb_category()
-        model = cmdb_category.read_one_by_id(object_id, Category.CATG__MODEL, model_entry_id)
+        model = cmdb_category.read_one_by_id(
+            object_id, Category.CATG__MODEL, model_entry_id
+        )
         assert "id" in model.keys()
         self._is_id_as_string(model["id"])
         id = int(model["id"])
         assert id == model_entry_id
 
         cmdb_category = self._use_cmdb_category()
-        first_ip_entry = cmdb_category.read_one_by_id(object_id, Category.CATG__IP, first_ip_entry_id)
+        first_ip_entry = cmdb_category.read_one_by_id(
+            object_id, Category.CATG__IP, first_ip_entry_id
+        )
         assert "id" in first_ip_entry.keys()
         self._is_id_as_string(first_ip_entry["id"])
         id = int(first_ip_entry["id"])
         assert id == first_ip_entry_id
 
         cmdb_category = self._use_cmdb_category()
-        second_ip_entry = cmdb_category.read_one_by_id(object_id, Category.CATG__IP, second_ip_entry_id)
+        second_ip_entry = cmdb_category.read_one_by_id(
+            object_id, Category.CATG__IP, second_ip_entry_id
+        )
         assert "id" in second_ip_entry.keys()
         self._is_id_as_string(second_ip_entry["id"])
         id = int(second_ip_entry["id"])
@@ -204,9 +218,7 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
     def test_update(self):
         object_id = self._create_server()
         cmdb_object = self._use_cmdb_object()
-        result = cmdb_object.update(object_id, {
-            "title": "Anne Admin"
-        })
+        result = cmdb_object.update(object_id, {"title": "Anne Admin"})
         assert isinstance(result, CMDBObject)
 
     def test_load(self):
@@ -220,7 +232,7 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
         self._set_up()
         # https://github.com/i-doit/api-client-php/blob/f3ec2be54943eb15e63cd1713a618c279253683a/tests/Idoit/APIClient/CMDBObjectTest.php#L370
         cmdb_objects = self._use_cmdb_objects()
-        objects = cmdb_objects.read([], 10, 0, 'id', CMDBObjects.SORT_DESCENDING)
+        objects = cmdb_objects.read([], 10, 0, "id", CMDBObjects.SORT_DESCENDING)
         object_ids = [object["id"] for object in objects]
 
         category_info = CMDBCategoryInfo(self._api)
@@ -230,7 +242,7 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
             result = self._use_cmdb_object().read_all(object_id)
 
             assert isinstance(result, dict)
-            self._is_object(result) #  TODO: implement
+            self._is_object(result)  #  TODO: implement
             assert object_id == result["id"]
 
             if "categories" not in result:
@@ -240,18 +252,18 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
 
             for category_constant, entries in result["categories"].items():
                 assert isinstance(category_constant, str)
-                #self._is_constant(category_constant) #  TODO: implement
+                # self._is_constant(category_constant) #  TODO: implement
 
                 assert category_constant not in blacklisted_category_constants
 
                 assert isinstance(entries, list)
-                
+
                 for index, entry in enumerate(entries):
                     assert isinstance(index, int)
                     assert index >= 0
 
                     assert isinstance(entry, dict)
-                    #self._is_category_entry(entry) # TODO: implement
+                    # self._is_category_entry(entry) # TODO: implement
 
                     if category_constant == Category.CATG__RELATION:
                         continue
@@ -271,13 +283,17 @@ class TestClassIdoitAPIClientCMDBObjectCMDBObject(BaseTest):
 
         # Exists:
         object_id = self._use_cmdb_object().create(ObjectType.SERVER, title)
-        result = self._use_cmdb_object().upsert(ObjectType.SERVER, title, {"purpose": "Test"})
+        result = self._use_cmdb_object().upsert(
+            ObjectType.SERVER, title, {"purpose": "Test"}
+        )
 
         assert isinstance(result, int)
         assert object_id == result
 
         # Does not exist:
-        result = self._use_cmdb_object().upsert(ObjectType.SERVER, self._generate_random_string())
+        result = self._use_cmdb_object().upsert(
+            ObjectType.SERVER, self._generate_random_string()
+        )
 
         assert isinstance(result, int)
         assert result > 0

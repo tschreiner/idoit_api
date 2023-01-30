@@ -1,8 +1,8 @@
 """Top-level package for i-doit API Client for Python."""
 
 __author__ = """Tedd Schreiner"""
-__email__ = 'info@teddschreiner.de'
-__version__ = '0.1.0'
+__email__ = "info@teddschreiner.de"
+__version__ = "0.1.0"
 
 
 from enum import Enum
@@ -12,15 +12,18 @@ from requests import Request as ReqRequest, Session
 import json
 
 """Constants"""
+
+
 class Constants:
     """
     Configuration: URL
     """
-    URL = 'url'
+
+    URL = "url"
     """
     Configuration: Port
     """
-    PORT = 'port'
+    PORT = "port"
     """
     Lowest allowed port number:
     """
@@ -32,64 +35,67 @@ class Constants:
     """
     Configuration: API key
     """
-    KEY = 'key'
+    KEY = "key"
     """
     Configuration: Username
     """
-    USERNAME = 'username'
+    USERNAME = "username"
     """
     Configuration: Password
     """
-    PASSWORD = 'password'
+    PASSWORD = "password"
     """
     Configuration: Language
     """
-    LANGUAGE = 'language'
+    LANGUAGE = "language"
     """
     Configuration: Proxy settings
     """
-    PROXY = 'proxy'
+    PROXY = "proxy"
     """
     Configuration: Activate proxy settings?
     """
-    PROXY_ACTIVE = 'active'
+    PROXY_ACTIVE = "active"
     """
     Configuration: Proxy type
     """
-    PROXY_TYPE = 'type'
+    PROXY_TYPE = "type"
     """
     HTTP proxy
     """
-    PROXY_TYPE_HTTP = 'HTTP'
+    PROXY_TYPE_HTTP = "HTTP"
     """
     SOCKS5 proxy
     """
-    PROXY_TYPE_SOCKS5 = 'SOCKS5'
+    PROXY_TYPE_SOCKS5 = "SOCKS5"
     """
     Configuration: Proxy host
     """
-    PROXY_HOST = 'host'
+    PROXY_HOST = "host"
     """
     Configuration: Proxy port
     """
-    PROXY_PORT = 'port'
+    PROXY_PORT = "port"
     """
     Configuration: Proxy username
     """
-    PROXY_USERNAME = 'username'
+    PROXY_USERNAME = "username"
     """
     Configuration: Proxy password
     """
-    PROXY_PASSWORD = 'password'
+    PROXY_PASSWORD = "password"
     """
     Configuration: Disable security-related cURL options
     """
-    BYPASS_SECURE_CONNECTION = 'bypassSecureConnection'
+    BYPASS_SECURE_CONNECTION = "bypassSecureConnection"
 
     CURLPROTO_HTTP = 1
     CURLPROTO_HTTPS = 2
 
+
 """Request"""
+
+
 class API:
     """API client"""
 
@@ -129,7 +135,6 @@ class API:
     """Composer Information about this project"""
     _composer = {}
 
-
     def __init__(self, config):
         """Constructor"""
         self._config = config
@@ -147,44 +152,71 @@ class API:
             "CURLOPT_FRESH_CONNECT": True,
             "CURLOPT_HEADER": True,
             "CURLINFO_HEADER_OUT": True,
-            "CURLOPT_CUSTOMREQUEST": 'POST',
+            "CURLOPT_CUSTOMREQUEST": "POST",
             "CURLOPT_RETURNTRANSFER": True,
             "CURLOPT_PORT": self._config[Constants.PORT],
-            "CURLOPT_REDIR_PROTOCOLS": Constants.CURLPROTO_HTTP or Constants.CURLPROTO_HTTPS,
-            "CURLOPT_ENCODING": 'application/json',
+            "CURLOPT_REDIR_PROTOCOLS": Constants.CURLPROTO_HTTP
+            or Constants.CURLPROTO_HTTPS,
+            "CURLOPT_ENCODING": "application/json",
             "CURLOPT_URL": self._config[Constants.URL],
             # In seconds:
             "CURLOPT_CONNECTTIMEOUT": 10,
             "CURLOPT_HTTPHEADER": {
                 "Content-Type": "application/json",
-                #"Expect": "application/json"
-            }
+                # "Expect": "application/json"
+            },
         }
 
         if self._config.get(Constants.PROXY) is not None:
-            if self._config[Constants.PROXY] is not None and self._config[Constants.PROXY][Constants.PROXY_ACTIVE]:
-                self._config['CURLOPT_PROXY'] = self._config[Constants.PROXY][Constants.PROXY_HOST]
-                self._options['CURLOPT_PROXYPORT'] = self._config[Constants.PROXY][Constants.PROXY_PORT]
+            if (
+                self._config[Constants.PROXY] is not None
+                and self._config[Constants.PROXY][Constants.PROXY_ACTIVE]
+            ):
+                self._config["CURLOPT_PROXY"] = self._config[Constants.PROXY][
+                    Constants.PROXY_HOST
+                ]
+                self._options["CURLOPT_PROXYPORT"] = self._config[Constants.PROXY][
+                    Constants.PROXY_PORT
+                ]
 
-                if self._config[Constants.PROXY][Constants.PROXY_USERNAME] is not None and isinstance(self._config[Constants.PROXY][Constants.PROXY_USERNAME], str) and self._config[Constants.PROXY][Constants.PROXY_USERNAME] != '':
-                    self._options['CURLOPT_PROXYUSERPWD'] = '{}:{}'.format(self._config[Constants.PROXY][Constants.PROXY_USERNAME], self._config[Constants.PROXY][Constants.PROXY_PASSWORD])
+                if (
+                    self._config[Constants.PROXY][Constants.PROXY_USERNAME] is not None
+                    and isinstance(
+                        self._config[Constants.PROXY][Constants.PROXY_USERNAME], str
+                    )
+                    and self._config[Constants.PROXY][Constants.PROXY_USERNAME] != ""
+                ):
+                    self._options["CURLOPT_PROXYUSERPWD"] = "{}:{}".format(
+                        self._config[Constants.PROXY][Constants.PROXY_USERNAME],
+                        self._config[Constants.PROXY][Constants.PROXY_PASSWORD],
+                    )
 
                 if self._config[Constants.PROXY][Constants.PROXY_TYPE] is not None:
-                    if self._config[Constants.PROXY][Constants.PROXY_TYPE] == Constants.PROXY_TYPE_HTTP:
-                        self._options['CURLOPT_PROXYTYPE'] = "CURLPROXY_HTTP"
-                    elif self._config[Constants.PROXY][Constants.PROXY_TYPE] == Constants.PROXY_TYPE_SOCKS5:
-                        self._options['CURLOPT_PROXYTYPE'] = "CURLPROXY_SOCKS5"
+                    if (
+                        self._config[Constants.PROXY][Constants.PROXY_TYPE]
+                        == Constants.PROXY_TYPE_HTTP
+                    ):
+                        self._options["CURLOPT_PROXYTYPE"] = "CURLPROXY_HTTP"
+                    elif (
+                        self._config[Constants.PROXY][Constants.PROXY_TYPE]
+                        == Constants.PROXY_TYPE_SOCKS5
+                    ):
+                        self._options["CURLOPT_PROXYTYPE"] = "CURLPROXY_SOCKS5"
                     else:
-                        raise Exception('Invalid proxy type: {}'.format(self._config[Constants.PROXY][Constants.PROXY_TYPE]))
+                        raise Exception(
+                            "Invalid proxy type: {}".format(
+                                self._config[Constants.PROXY][Constants.PROXY_TYPE]
+                            )
+                        )
 
         if self._config[Constants.BYPASS_SECURE_CONNECTION]:
-            self._options['CURLOPT_SSL_VERIFYPEER'] = False
-            self._options['CURLOPT_SSL_VERIFYHOST'] = 0
-            self._options['CURLOPT_SSLVERSION'] = "CURL_SSLVERSION_DEFAULT"
+            self._options["CURLOPT_SSL_VERIFYPEER"] = False
+            self._options["CURLOPT_SSL_VERIFYHOST"] = 0
+            self._options["CURLOPT_SSLVERSION"] = "CURL_SSLVERSION_DEFAULT"
         else:
-            self._options['CURLOPT_SSL_VERIFYPEER'] = True
-            self._options['CURLOPT_SSL_VERIFYHOST'] = 2
-            self._options['CURLOPT_SSLVERSION'] = "CURL_SSLVERSION_TLSv1_2"
+            self._options["CURLOPT_SSL_VERIFYPEER"] = True
+            self._options["CURLOPT_SSL_VERIFYHOST"] = 2
+            self._options["CURLOPT_SSLVERSION"] = "CURL_SSLVERSION_TLSv1_2"
 
     def _set_composer_options(self):
         """Not used in python"""
@@ -202,19 +234,21 @@ class API:
         Raises:
             Exception: If response is invalid"""
         if not isinstance(response, dict):
-            raise Exception('Invalid response: must be a dictionary.')
+            raise Exception("Invalid response: must be a dictionary.")
 
-        if 'error' in response and response['error'] is not None:
-            raise Exception('Server error: {}'.format(response['error']))
-            if not isinstance(response['error'], dict):
+        if "error" in response and response["error"] is not None:
+            raise Exception("Server error: {}".format(response["error"]))
+            if not isinstance(response["error"], dict):
                 raise Exception('Invalid response: "error" must be a dictionary.')
 
-            if 'code' not in response['error'] or not isinstance(response['error']['code'], int):
-                raise Exception('Invalid response: "error" must contain a "code" element.')
+            if "code" not in response["error"] or not isinstance(
+                response["error"]["code"], int
+            ):
+                raise Exception(
+                    'Invalid response: "error" must contain a "code" element.'
+                )
 
-
-
-        return response['result']
+        return response["result"]
 
     def raw_request(self, data={}, headers=[]):
         """Performs a raw request
@@ -245,10 +279,10 @@ class API:
         if self._last_info is None:
             return None
 
-        if 'request_header' in self._last_info:
-            return self._last_info['request_header']
+        if "request_header" in self._last_info:
+            return self._last_info["request_header"]
 
-        return ''
+        return ""
 
     def _get_last_response_headers(self):
         """Returns the HTTP headers of the last server response
@@ -256,7 +290,6 @@ class API:
         Returns:
             dict: HTTP headers"""
         return self._last_response_headers
-
 
     def get_last_request_content(self):
         """Returns the content of the last request
@@ -283,12 +316,10 @@ class API:
 
     Raises:
         Exception: If configuration is invalid"""
+
     def _test_config(self):
         """Mandatory settings"""
-        mandatory_settings = [
-            Constants.URL,
-            Constants.KEY
-        ]
+        mandatory_settings = [Constants.URL, Constants.KEY]
 
         for setting in mandatory_settings:
             if setting not in self._config:
@@ -300,15 +331,21 @@ class API:
         """URL"""
         self._check_string(Constants.URL)
 
-        if not self._config[Constants.URL].startswith('http://') and not self._config[Constants.URL].startswith('https://'):
-            raise Exception('Unsupported protocol in API URL "{}".'.format(self._config[Constants.URL]))
+        if not self._config[Constants.URL].startswith("http://") and not self._config[
+            Constants.URL
+        ].startswith("https://"):
+            raise Exception(
+                'Unsupported protocol in API URL "{}".'.format(
+                    self._config[Constants.URL]
+                )
+            )
 
         """Port"""
         if Constants.PORT in self._config:
             self._check_port(Constants.PORT)
-        elif self._config[Constants.URL].startswith('https://'):
+        elif self._config[Constants.URL].startswith("https://"):
             self._config[Constants.PORT] = 443
-        elif self._config[Constants.URL].startswith('http://'):
+        elif self._config[Constants.URL].startswith("http://"):
             self._config[Constants.PORT] = 80
 
         """API key"""
@@ -319,11 +356,11 @@ class API:
             self._check_string(Constants.USERNAME)
 
             if not Constants.PASSWORD in self._config:
-                raise Exception('Username has no password.')
+                raise Exception("Username has no password.")
 
             self._check_string(Constants.PASSWORD)
         elif Constants.PASSWORD in self._config:
-            raise Exception('There is no username.')
+            raise Exception("There is no username.")
 
         """Language"""
         if Constants.LANGUAGE in self._config:
@@ -332,25 +369,25 @@ class API:
         """Proxy settings"""
         if Constants.PROXY in self._config:
             if not isinstance(self._config[Constants.PROXY], dict):
-                raise Exception('Proxy settings must be an object.')
+                raise Exception("Proxy settings must be an object.")
 
-            mandatory_settings = [
-                Constants.PROXY_ACTIVE
-            ]
+            mandatory_settings = [Constants.PROXY_ACTIVE]
 
             for setting in mandatory_settings:
                 if setting not in self._config[Constants.PROXY]:
                     raise Exception(f'Proxy setting "{setting}" is mandatory.')
 
             """Proxy active"""
-            if not isinstance(self._config[Constants.PROXY][Constants.PROXY_ACTIVE], bool):
-                raise Exception('Proxy active setting must be a boolean.')
+            if not isinstance(
+                self._config[Constants.PROXY][Constants.PROXY_ACTIVE], bool
+            ):
+                raise Exception("Proxy active setting must be a boolean.")
 
             if self._config[Constants.PROXY][Constants.PROXY_ACTIVE]:
                 mandatory_settings = [
                     Constants.PROXY_TYPE,
                     Constants.PROXY_HOST,
-                    Constants.PROXY_PORT
+                    Constants.PROXY_PORT,
                 ]
 
                 for setting in mandatory_settings:
@@ -365,16 +402,18 @@ class API:
                     self._check_string(Constants.PROXY_USERNAME, Constants.PROXY)
 
                     if self._config[Constants.PROXY][Constants.PROXY_PASSWORD] is None:
-                        raise Exception('Proxy username has no password.')
+                        raise Exception("Proxy username has no password.")
 
                     self._check_string(Constants.PROXY_PASSWORD, Constants.PROXY)
-                elif self._config[Constants.PROXY][Constants.PROXY_PASSWORD] is not None:
-                    raise Exception('There is no proxy username.')
+                elif (
+                    self._config[Constants.PROXY][Constants.PROXY_PASSWORD] is not None
+                ):
+                    raise Exception("There is no proxy username.")
 
         """Bypass secure connection"""
         if Constants.BYPASS_SECURE_CONNECTION in self._config:
             if not isinstance(self._config[Constants.BYPASS_SECURE_CONNECTION], bool):
-                raise Exception('Bypass secure connection setting must be a boolean.')
+                raise Exception("Bypass secure connection setting must be a boolean.")
         else:
             self._config[Constants.BYPASS_SECURE_CONNECTION] = False
 
@@ -401,9 +440,14 @@ class API:
         else:
             value = self._config[key]
 
-
-        if (type(value) is not int) or (value < Constants.PORT_MIN) or (value > Constants.PORT_MAX):
-            raise Exception(f'Configuration setting "{key}" is not a valid port number between {Constants.PORT_MIN} and {Constants.PORT_MAX}.')
+        if (
+            (type(value) is not int)
+            or (value < Constants.PORT_MIN)
+            or (value > Constants.PORT_MAX)
+        ):
+            raise Exception(
+                f'Configuration setting "{key}" is not a valid port number between {Constants.PORT_MIN} and {Constants.PORT_MAX}.'
+            )
 
     def is_logged_in(self):
         """Is client logged-in to API?"""
@@ -412,7 +456,7 @@ class API:
     def login(self):
         """Login to API"""
         if self.is_logged_in():
-            raise Exception('Already logged in')
+            raise Exception("Already logged in")
 
         """Auto-connect if not connected"""
         if not self.is_connected():
@@ -420,15 +464,17 @@ class API:
 
         response = self.request("idoit.login")
 
-        if response['session-id'] is  None:
-            raise Exception('Failed to login because i-doit responded without a session ID')
+        if response["session-id"] is None:
+            raise Exception(
+                "Failed to login because i-doit responded without a session ID"
+            )
 
-        self._session = response['session-id']
+        self._session = response["session-id"]
 
     def logout(self):
         """Logout from API"""
         if not self.is_logged_in():
-            raise Exception('Not logged in')
+            raise Exception("Not logged in")
 
         self.request("idoit.logout")
 
@@ -453,10 +499,10 @@ class API:
         Returns:
             Result of request"""
         data = {
-            'version': '2.0',
-            'method': method,
-            'params': params,
-            'id': self._gen_id()
+            "version": "2.0",
+            "method": method,
+            "params": params,
+            "id": self._gen_id(),
         }
 
         data["params"]["apikey"] = self._config[Constants.KEY]
@@ -468,7 +514,7 @@ class API:
         response = self._execute(data)
         self._evaluate_response(response)
 
-        return response['result']
+        return response["result"]
 
     def batch_request(self, requests):
         """Sends batch request to API
@@ -481,25 +527,27 @@ class API:
         data = []
 
         for request in requests:
-            if 'method' not in request:
-                raise Exception('Request must have a method')
+            if "method" not in request:
+                raise Exception("Request must have a method")
 
             params = {}
 
-            if 'params' in request:
-                params = request['params']
+            if "params" in request:
+                params = request["params"]
 
             params["apikey"] = self._config[Constants.KEY]
 
             if Constants.LANGUAGE in self._config:
                 params["language"] = self._config[Constants.LANGUAGE]
 
-            data.append({
-                'version': '2.0',
-                'method': request['method'],
-                'params': params,
-                'id': self._gen_id()
-            })
+            data.append(
+                {
+                    "version": "2.0",
+                    "method": request["method"],
+                    "params": params,
+                    "id": self._gen_id(),
+                }
+            )
 
         responses = self._execute(data)
 
@@ -507,9 +555,9 @@ class API:
 
         for response in responses:
             if not isinstance(response, dict):
-                raise Exception('Response is not a dictionary')
+                raise Exception("Response is not a dictionary")
             self._evaluate_response(response)
-            results.append(response['result'])
+            results.append(response["result"])
 
         return results
 
@@ -526,24 +574,41 @@ class API:
 
         options["CURLOPT_POSTFIELDS"] = data_as_string
 
-        options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Username"] = self._config[Constants.USERNAME]
-        options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Password"] = self._config[Constants.PASSWORD]
+        options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Username"] = self._config[
+            Constants.USERNAME
+        ]
+        options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Password"] = self._config[
+            Constants.PASSWORD
+        ]
 
-        #if self._session is not None:
+        # if self._session is not None:
         #    options["CURLOPT_HTTPHEADER"] = {
         #        "X-Auth-Token": self._session
         #    }
-        if Constants.USERNAME in self._config and isinstance(self._config[Constants.USERNAME], str) and self._config[Constants.USERNAME] != "" and self._config[Constants.PASSWORD] is not None and isinstance(self._config[Constants.PASSWORD], str) and self._config[Constants.PASSWORD] != "":
-            options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Username"] = self._config[Constants.USERNAME]
-            options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Password"] = self._config[Constants.PASSWORD]
+        if (
+            Constants.USERNAME in self._config
+            and isinstance(self._config[Constants.USERNAME], str)
+            and self._config[Constants.USERNAME] != ""
+            and self._config[Constants.PASSWORD] is not None
+            and isinstance(self._config[Constants.PASSWORD], str)
+            and self._config[Constants.PASSWORD] != ""
+        ):
+            options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Username"] = self._config[
+                Constants.USERNAME
+            ]
+            options["CURLOPT_HTTPHEADER"]["X-RPC-Auth-Password"] = self._config[
+                Constants.PASSWORD
+            ]
 
-        #curl_setopt_array(self._resource, options)
+        # curl_setopt_array(self._resource, options)
 
         headers = options["CURLOPT_HTTPHEADER"]
         payload = options["CURLOPT_POSTFIELDS"]
 
         s = Session()
-        req = ReqRequest("POST", self._config[Constants.URL], data=payload, headers=headers)
+        req = ReqRequest(
+            "POST", self._config[Constants.URL], data=payload, headers=headers
+        )
         prepped = s.prepare_request(req)
         resp = s.send(prepped)
 
@@ -562,11 +627,11 @@ class API:
         self._resource = requests.Session()
 
         if self._resource is None:
-            raise Exception('Failed to initialize cURL')
+            raise Exception("Failed to initialize cURL")
 
     def disconnect(self):
         if self.is_connected() is False:
-            raise Exception('Not connected')
+            raise Exception("Not connected")
 
         self._resource = None
 
@@ -583,6 +648,8 @@ class API:
 
 
 """Request class for the i-doit API client."""
+
+
 class Request:
     api = None
 
@@ -602,7 +669,12 @@ class Request:
         :return: Identifier
         :rtype: int
         """
-        if "id" not in result or type(result["id"]) is not int or "success" not in result or type(result["success"]) is not True:
+        if (
+            "id" not in result
+            or type(result["id"]) is not int
+            or "success" not in result
+            or type(result["success"]) is not True
+        ):
             if "message" in result:
                 raise Exception(f"Bad result: {result['message']}")
             else:
@@ -617,7 +689,12 @@ class Request:
         :type result: dict
         """
         if "success" not in result or type(result["success"]) is not True:
-            if ignore_depricated == True and "message" in result and "This method is deprecated and will be removed in a feature release." in result["message"]:
+            if (
+                ignore_depricated == True
+                and "message" in result
+                and "This method is deprecated and will be removed in a feature release."
+                in result["message"]
+            ):
                 return
             if "message" in result:
                 raise Exception(f"Bad result: {result['message']}")
@@ -631,7 +708,9 @@ class Request:
         :type results: list
         """
         for result in results:
-            self.require_success_without_identifier(result, ignore_depricated=ignore_deprecated)
+            self.require_success_without_identifier(
+                result, ignore_depricated=ignore_deprecated
+            )
 
     def _require_success_for_all(self, result, ignore_deprecated=False):
         self.require_success_for_all(result, ignore_deprecated=ignore_deprecated)
