@@ -5,7 +5,6 @@ __email__ = "info@teddschreiner.de"
 __version__ = "0.1.0"
 
 
-from enum import Enum, verify
 from multiprocessing.sharedctypes import Value
 import requests
 from requests import Request as ReqRequest, Session
