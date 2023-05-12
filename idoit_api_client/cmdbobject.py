@@ -5,6 +5,7 @@ from idoit_api_client.cmdbcategoryinfo import CMDBCategoryInfo
 from idoit_api_client.cmdbobjects import CMDBObjects
 from idoit_api_client.cmdbobjecttypecategories import CMDBObjectTypeCategories
 
+
 class CMDBObject(Request):
     """CMDBObject class for i-doit API client."""
 
@@ -83,7 +84,7 @@ class CMDBObject(Request):
         if len(objects) == 0:
             raise Exception(f"Object not found by identifier {object_id}")
         elif len(objects) == 1:
-            return objects[-1] 
+            return objects[-1]
         else:
             raise Exception(f"Found multiple objects by identifier {object_id}")
 
@@ -148,7 +149,9 @@ class CMDBObject(Request):
 
         :param object_id: Object identifier
         """
-        result = self._api.request("cmdb.object.markAsMassChangeTemplate", {"object": object_id})
+        result = self._api.request(
+            "cmdb.object.markAsMassChangeTemplate", {"object": object_id}
+        )
 
     def recycle(self, object_id):
         """Restore object to "normal" status
@@ -176,14 +179,19 @@ class CMDBObject(Request):
 
         cmdb_object_type_categories = CMDBObjectTypeCategories(self._api)
 
-        object = {**object, **cmdb_object_type_categories.read_by_id(object["objecttype"])}
+        object = {
+            **object,
+            **cmdb_object_type_categories.read_by_id(object["objecttype"]),
+        }
 
         cmdb_category = CMDBCategory(self._api)
 
         category_types = ["catg", "cats", "custom"]
 
-        cmdb_category_info = CMDBCategoryInfo(self._api) # TODO: Port CMDBCategoryInfo
-        blacklisted_category_constants = cmdb_category_info.get_virtual_category_constants()
+        cmdb_category_info = CMDBCategoryInfo(self._api)  # TODO: Port CMDBCategoryInfo
+        blacklisted_category_constants = (
+            cmdb_category_info.get_virtual_category_constants()
+        )
 
         for category_type in category_types:
             if category_type not in object:
@@ -194,9 +202,11 @@ class CMDBObject(Request):
             i = 0
             for object_category_type in object[category_type]:
                 if "const" not in object_category_type:
-                    raise Exception("Information about categories is broken. Constant is missing.")
+                    raise Exception(
+                        "Information about categories is broken. Constant is missing."
+                    )
                 category_constant = object[category_type][i]["const"]
-                
+
                 if category_constant in blacklisted_category_constants:
                     continue
 
@@ -225,7 +235,6 @@ class CMDBObject(Request):
 
         return object
 
-
     def upsert(self, type, title, attributes={}):
         """Create new object or fetch existing one based on its title and type.
 
@@ -236,10 +245,7 @@ class CMDBObject(Request):
         :return Object identifier"""
         cmdb_objects = CMDBObjects(self._api)
 
-        filter = {
-            "title": title,
-            "type": type
-        }
+        filter = {"title": title, "type": type}
 
         result = cmdb_objects.read(filter)
 

@@ -2,23 +2,18 @@
 i-doit API Client for Python
 ============================
 
+.. image:: https://github.com/tschreiner/idoit_api/actions/workflows/build.yml/badge.svg
+        :target: https://github.com/tschreiner/idoit_api/actions/workflows/build.yml
 
 .. image:: https://img.shields.io/pypi/v/idoit_api_client.svg
         :target: https://pypi.python.org/pypi/idoit_api_client
-
-.. image:: https://img.shields.io/travis/tschreiner/idoit_api.svg
-        :target: https://travis-ci.com/tschreiner/idoit_api
 
 .. image:: https://readthedocs.org/projects/idoit-api/badge/?version=latest
         :target: https://idoit-api.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
-
-.. image:: https://pyup.io/repos/github/tschreiner/idoit_api/shield.svg
-     :target: https://pyup.io/repos/github/tschreiner/idoit_api/
-     :alt: Updates
-
-
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
 
 i-doit API Client for Python. Port of the original PHP i-doit API Client.
 
@@ -56,7 +51,7 @@ Option 2: pip install from GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Install ``idoit_api_client`` using ``pip`` from GitHub::
-    
+
     $ pip install git+https://github.com/tschreiner/idoit_api.git@main
 
 Option 3: Install ``idoit_api_client`` from source

@@ -10,6 +10,7 @@ from tests.constants import Category, ObjectType
 
 import random
 
+
 class TestClassIdoitAPIClientCMDBCategoryInfoCMDBCategoryInfo(BaseTest):
     """Test class idoit_api_client.cmdbcategoryinfo.CMDBCategoryInfo"""
 
@@ -44,7 +45,7 @@ class TestClassIdoitAPIClientCMDBCategoryInfoCMDBCategoryInfo(BaseTest):
         self._categories = [
             Category.CATG__GLOBAL,
             Category.CATG__IP,
-            Category.CATS__PERSON_MASTER
+            Category.CATS__PERSON_MASTER,
         ]
 
     def test_read(self):
@@ -52,14 +53,14 @@ class TestClassIdoitAPIClientCMDBCategoryInfoCMDBCategoryInfo(BaseTest):
         self._set_up()
         for category_const in self._categories:
             result = self._instance.read(category_const)
-            
+
             assert isinstance(result, dict)
             assert len(result) > 0
 
             self._is_category_info(result)
 
     def _is_attribute_info(self, attribute):
-        # "title": 
+        # "title":
         assert "title" in attribute
         assert isinstance(attribute["title"], str)
         assert len(attribute["title"]) > 0

@@ -9,8 +9,9 @@ import sys
 
 import random
 import string
-#import datetime
-#from dateutil.parser import parse as timeparse
+
+# import datetime
+# from dateutil.parser import parse as timeparse
 
 
 from idoit_api_client import Constants, API
@@ -25,11 +26,12 @@ from tests.constants import Category, ObjectType
 
 class BaseTest:
     """Base test class."""
+
     _cmdb_object = None
     _cmdb_category = None
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
     }
     _api = None
     _conditions = [
@@ -38,13 +40,13 @@ class BaseTest:
         3,  # Archived
         4,  # Deleted
         6,  # Template
-        7  # Mass change template
+        7,  # Mass change template
     ]
 
     def _set_up(self) -> None:
         """Constructor."""
         api = API(self.config)
-        #self._instance = CMDBCategory(api)
+        # self._instance = CMDBCategory(api)
         config = {
             Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
             Constants.KEY: "c1ia5q",
@@ -68,12 +70,14 @@ class BaseTest:
         """Validate string as i-doit constant"""
         assert len(value) > 0
 
-        assert re.match(r'/([A-Z0-9_]+)/', value)
-        assert re.match(r'/^([A-Z]+)/', value)
+        assert re.match(r"/([A-Z0-9_]+)/", value)
+        assert re.match(r"/^([A-Z]+)/", value)
 
     def _generate_random_string(self):
         """Generate random string."""
-        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        return "".join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)
+        )
 
     def _generate_random_id(self):
         """Generate random id."""
@@ -88,7 +92,9 @@ class BaseTest:
 
     def _generate_description(self):
         """Generate longer description text."""
-        description_text = f"This is a test object created by the idoit_api_client test suite. "
+        description_text = (
+            f"This is a test object created by the idoit_api_client test suite. "
+        )
         return description_text
 
     def _use_cmdb_category(self):
@@ -172,12 +178,16 @@ class BaseTest:
 
     def _define_model(self, object_id):
         cmdb_category = self._use_cmdb_category()
-        return cmdb_category.create(object_id, Category.CATG__MODEL, {
-            "manufacturer": self._generate_random_string(),
-            "title": self._generate_random_string(),
-            "serial": self._generate_random_string(),
-            "description": self._generate_random_string(),
-        })
+        return cmdb_category.create(
+            object_id,
+            Category.CATG__MODEL,
+            {
+                "manufacturer": self._generate_random_string(),
+                "title": self._generate_random_string(),
+                "serial": self._generate_random_string(),
+                "description": self._generate_random_string(),
+            },
+        )
 
     def _add_ipv4(self, object_id, subnet_id=None):
         """Add random IPv4 address to object.
@@ -193,15 +203,19 @@ class BaseTest:
             params_net = subnet_id
         else:
             params_net = self._get_ipv4_net()
-        result_id = cmdb_category.create(object_id, Category.CATG__IP, {
-            "net": params_net,
-            "active": random.randrange(0, 1),
-            "primary": random.randrange(0, 1),
-            "net_type": 1,  # IPv4
-            "ipv4_assignment": 2,  # Static
-            "ipv4_address": self._generate_ipv4_address(),
-            "description": self._generate_description()
-        })
+        result_id = cmdb_category.create(
+            object_id,
+            Category.CATG__IP,
+            {
+                "net": params_net,
+                "active": random.randrange(0, 1),
+                "primary": random.randrange(0, 1),
+                "net_type": 1,  # IPv4
+                "ipv4_assignment": 2,  # Static
+                "ipv4_address": self._generate_ipv4_address(),
+                "description": self._generate_description(),
+            },
+        )
         return result_id
 
     def _get_ipv4_net(self):
@@ -259,22 +273,20 @@ class BaseTest:
 
     def _is_one_object(self, object):
         required_keys = [
-            'id',
-            'title',
-            'sysid',
-            'objecttype',
-            'created',
-            'type_title',
-            'type_icon',
-            'status',
-            'cmdb_status',
-            'cmdb_status_title',
-            'image'
+            "id",
+            "title",
+            "sysid",
+            "objecttype",
+            "created",
+            "type_title",
+            "type_icon",
+            "status",
+            "cmdb_status",
+            "cmdb_status_title",
+            "image",
         ]
 
-        optional_keys = [
-            'updated'
-        ]
+        optional_keys = ["updated"]
 
         keys = required_keys + optional_keys
 
@@ -284,53 +296,55 @@ class BaseTest:
         for key in required_keys:
             assert key in object.keys()
 
-        assert isinstance(object['id'], int)
-        self._is_id(object['id'])
+        assert isinstance(object["id"], int)
+        self._is_id(object["id"])
 
-        assert isinstance(object['title'], str)
+        assert isinstance(object["title"], str)
 
-        assert isinstance(object['sysid'], str)
+        assert isinstance(object["sysid"], str)
 
-        assert isinstance(object['objecttype'], int)
-        assert self._is_id(object['objecttype'])
+        assert isinstance(object["objecttype"], int)
+        assert self._is_id(object["objecttype"])
 
-        assert isinstance(object['type_title'], str)
+        assert isinstance(object["type_title"], str)
 
-        assert isinstance(object['type_icon'], str)
+        assert isinstance(object["type_icon"], str)
 
-        assert isinstance(object['status'], int)
-        self._is_id(object['status'])
-        assert object['status'] in self._conditions
+        assert isinstance(object["status"], int)
+        self._is_id(object["status"])
+        assert object["status"] in self._conditions
 
-        assert isinstance(object['created'], str)
-        #self._is_time(object['created'])
+        assert isinstance(object["created"], str)
+        # self._is_time(object['created'])
 
         if "updated" in object.keys():
-            assert isinstance(object['updated'], str)
-            #self._is_time(object['updated'])
+            assert isinstance(object["updated"], str)
+            # self._is_time(object['updated'])
 
-        assert isinstance(object['cmdb_status'], int)
-        self._is_id(object['cmdb_status'])
+        assert isinstance(object["cmdb_status"], int)
+        self._is_id(object["cmdb_status"])
 
-        assert isinstance(object['cmdb_status_title'], str)
+        assert isinstance(object["cmdb_status_title"], str)
 
-        assert isinstance(object['image'], str)
+        assert isinstance(object["image"], str)
+
 
 class APITest(BaseTest):
     """Test API."""
+
     def test_constructor(self):
         """Test constructor."""
         config = {
-            Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-            Constants.KEY: 'c1ia5q'
+            Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+            Constants.KEY: "c1ia5q",
         }
         api = API(config)
         assert isinstance(api, API)
 
+
 @pytest.fixture
 def response():
-    """Sample pytest fixture.    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
+    """Sample pytest fixture.    See more at: http://doc.pytest.org/en/latest/fixture.html"""
     # import requests
     # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
 
@@ -340,155 +354,156 @@ def test_content(response):
     # from bs4 import BeautifulSoup
     # assert 'GitHub' in BeautifulSoup(response.content).title.string
 
-#def test_connect_no_url():
-#def test_connect_no_key():
-#def test_connect_no_username():
-#def test_connect_no_password():
 
-#def test_login_no_url():
-#def test_login_no_key():
-#def test_login_no_username():
-#def test_login_no_password():
+# def test_connect_no_url():
+# def test_connect_no_key():
+# def test_connect_no_username():
+# def test_connect_no_password():
 
-#def test_request_no_url():
-#def test_request_no_key():
-#def test_request_no_username():
-#def test_request_no_password():
+# def test_login_no_url():
+# def test_login_no_key():
+# def test_login_no_username():
+# def test_login_no_password():
 
-#def test_request_no_method():
-#def test_request_no_params():
+# def test_request_no_url():
+# def test_request_no_key():
+# def test_request_no_username():
+# def test_request_no_password():
 
-#def test_request_invalid_method():
-#def test_request_invalid_params():
+# def test_request_no_method():
+# def test_request_no_params():
 
-#def test_is_connected():
-#def test_is_logged_in():
+# def test_request_invalid_method():
+# def test_request_invalid_params():
 
-#def test_request_content():
-#def test_request_invalid_content():
+# def test_is_connected():
+# def test_is_logged_in():
+
+# def test_request_content():
+# def test_request_invalid_content():
 
 
+# def test _request():
+# def test_raw_request():
+# def test_batch_request():
 
-#def test _request():
-#def test_raw_request():
-#def test_batch_request():
 
 def test_scenario():
     """Test a complete scenario."""
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
     }
     api = API(config)
     api.connect()
     api.login()
-    result = api.request('cmdb.category.read', {
-        'objID': 1,
-        'category': 'C__CATG__GLOBAL'
-    })
+    result = api.request(
+        "cmdb.category.read", {"objID": 1, "category": "C__CATG__GLOBAL"}
+    )
     api.logout()
     assert result is not None
+
 
 def test_batch_scenario():
     """Test a complete batch scenario."""
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
     }
     api = API(config)
     api.connect()
     api.login()
-    result = api.batch_request([
-        {
-            'method': 'cmdb.category.read',
-            'params': {
-                'objID': 1,
-                'category': 'C__CATG__GLOBAL'
-            }
-        },
-        {
-            'method': 'cmdb.category.read',
-            'params': {
-                'objID': 1,
-                'category': 'C__CATG__GLOBAL'
-            }
-        }
-    ])
+    result = api.batch_request(
+        [
+            {
+                "method": "cmdb.category.read",
+                "params": {"objID": 1, "category": "C__CATG__GLOBAL"},
+            },
+            {
+                "method": "cmdb.category.read",
+                "params": {"objID": 1, "category": "C__CATG__GLOBAL"},
+            },
+        ]
+    )
     api.logout()
     assert result is not None
+
 
 def test_connect():
     """Test connect."""
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
     }
     api = API(config)
     api.connect()
     assert api._resource is not None
 
+
 def test_login():
     """Test login."""
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
     }
     api = API(config)
     api.login()
     assert api.is_logged_in() is True
 
+
 def test_request():
     """Test request."""
     config = {
-        Constants.URL: 'https://demo.i-doit.com/src/jsonrpc.php',
-        Constants.KEY: 'c1ia5q',
-        Constants.USERNAME: 'admin',
-        Constants.PASSWORD: 'admin'
+        Constants.URL: "https://demo.i-doit.com/src/jsonrpc.php",
+        Constants.KEY: "c1ia5q",
+        Constants.USERNAME: "admin",
+        Constants.PASSWORD: "admin",
     }
     api = API(config)
     api.login()
-    result = api.request('cmdb.category.read', {
-        'objID': 1,
-        'category': 'C__CATG__GLOBAL'
-    })
+    result = api.request(
+        "cmdb.category.read", {"objID": 1, "category": "C__CATG__GLOBAL"}
+    )
     assert result is not None
+
 
 def test_constants():
     """Test constants."""
-    constants =  Constants
-    assert constants.URL == 'url'
-    assert constants.PORT == 'port'
+    constants = Constants
+    assert constants.URL == "url"
+    assert constants.PORT == "port"
     assert constants.PORT_MIN == 1
     assert constants.PORT_MAX == 65535
-    assert constants.KEY == 'key'
-    assert constants.USERNAME == 'username'
-    assert constants.PASSWORD == 'password'
-    assert constants.LANGUAGE == 'language'
-    assert constants.PROXY == 'proxy'
-    assert constants.PROXY_ACTIVE == 'active'
-    assert constants.PROXY_TYPE == 'type'
-    assert constants.PROXY_TYPE_HTTP == 'HTTP'
-    assert constants.PROXY_TYPE_SOCKS5 == 'SOCKS5'
-    assert constants.PROXY_HOST == 'host'
-    assert constants.PROXY_PORT == 'port'
-    assert constants.PROXY_USERNAME == 'username'
-    assert constants.PROXY_PASSWORD == 'password'
-    assert constants.BYPASS_SECURE_CONNECTION == 'bypassSecureConnection'
+    assert constants.KEY == "key"
+    assert constants.USERNAME == "username"
+    assert constants.PASSWORD == "password"
+    assert constants.LANGUAGE == "language"
+    assert constants.PROXY == "proxy"
+    assert constants.PROXY_ACTIVE == "active"
+    assert constants.PROXY_TYPE == "type"
+    assert constants.PROXY_TYPE_HTTP == "HTTP"
+    assert constants.PROXY_TYPE_SOCKS5 == "SOCKS5"
+    assert constants.PROXY_HOST == "host"
+    assert constants.PROXY_PORT == "port"
+    assert constants.PROXY_USERNAME == "username"
+    assert constants.PROXY_PASSWORD == "password"
+    assert constants.BYPASS_SECURE_CONNECTION == "bypassSecureConnection"
     assert constants.CURLPROTO_HTTP == 1
     assert constants.CURLPROTO_HTTPS == 2
+
 
 def test_command_line_interface():
     """Test the CLI."""
     runner = CliRunner()
     result = runner.invoke(cli.main)
     assert result.exit_code == 0
-    assert 'idoit_api_client.cli.main' in result.output
-    help_result = runner.invoke(cli.main, ['--help'])
+    assert "idoit_api_client.cli.main" in result.output
+    help_result = runner.invoke(cli.main, ["--help"])
     assert help_result.exit_code == 0
-    assert '--help  Show this message and exit.' in help_result.output
+    assert "--help  Show this message and exit." in help_result.output

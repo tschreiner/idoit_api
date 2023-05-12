@@ -2,6 +2,7 @@
 
 from idoit_api_client import Request
 
+
 class CMDBCategory(Request):
     """CMDBCategories class for i-doit API client."""
 
@@ -17,7 +18,7 @@ class CMDBCategory(Request):
         params = {
             "object": object_id,
             "data": attributes,
-            "category": category_constant
+            "category": category_constant,
         }
 
         if entry_id is not None:
@@ -25,7 +26,12 @@ class CMDBCategory(Request):
 
         result = self._api.request("cmdb.category.save", params)
 
-        if "entry" not in result or not isinstance(result["entry"], int) or "success" not in result or not result["success"]:
+        if (
+            "entry" not in result
+            or not isinstance(result["entry"], int)
+            or "success" not in result
+            or not result["success"]
+        ):
             if "message" in result:
                 raise Exception(f'Bad result: {result["message"]}')
             else:
@@ -43,11 +49,7 @@ class CMDBCategory(Request):
         :param attributes: Attributes as key-value pairs
 
         :return: Entry identifier"""
-        params = {
-            "objID": object_id,
-            "data": attributes,
-            "category": category_const
-        }
+        params = {"objID": object_id, "data": attributes, "category": category_const}
 
         result = self._api.request("cmdb.category.create", params)
 
@@ -67,11 +69,10 @@ class CMDBCategory(Request):
             note: a status != 2 is only suitable for multi-value categoriesd
 
         :return: Indexed array of result sets (for both single- and multi-valued categories)"""
-        result = self._api.request("cmdb.category.read", {
-            "objID": object_id,
-            "category": category_const,
-            "status": status
-        })
+        result = self._api.request(
+            "cmdb.category.read",
+            {"objID": object_id, "category": category_const, "status": status},
+        )
         return result
 
     def read_one_by_id(self, object_id, category_const, entry_id, status=2):
@@ -93,14 +94,18 @@ class CMDBCategory(Request):
 
         for entry in entries:
             if "id" not in entry:
-                raise Exception(f"Entries for category \"{category_const}\" contain no identifier")
+                raise Exception(
+                    f'Entries for category "{category_const}" contain no identifier'
+                )
 
             current_id = int(entry["id"])
 
             if current_id == entry_id:
                 return entry
 
-        raise Exception(f"No entry with identifier \"{entry_id}\" found in category \"{category_const}\" for object \"{object_id}\"")
+        raise Exception(
+            f'No entry with identifier "{entry_id}" found in category "{category_const}" for object "{object_id}"'
+        )
 
     def read_first(self, object_id, category_const):
         """Read first category entry for a specific object (works with both single- and multi-valued categories).
@@ -128,11 +133,10 @@ class CMDBCategory(Request):
         if entry_id is not None:
             attributes["category_id"] = entry_id
 
-        result = self._api.request("cmdb.category.update", {
-            "objID": object_id,
-            "category": category_const,
-            "data": attributes
-        })
+        result = self._api.request(
+            "cmdb.category.update",
+            {"objID": object_id, "category": category_const, "data": attributes},
+        )
 
         self._require_success_without_identifier(result, True)
 
@@ -145,11 +149,10 @@ class CMDBCategory(Request):
         :param category_const: Category constant
         :param entry_id: Entry identifier"""
 
-        self._api.request("cmdb.category.archive", {
-            "object": object_id,
-            "category": category_const,
-            "entry": entry_id
-        })
+        self._api.request(
+            "cmdb.category.archive",
+            {"object": object_id, "category": category_const, "entry": entry_id},
+        )
 
     def delete(self, object_id, category_const, entry_id):
         """Mark entry in a multi-value category for a specific object as deleted.
@@ -159,11 +162,10 @@ class CMDBCategory(Request):
         :param entry_id: Entry identifier
 
         :return returns itself"""
-        self._api.request("cmdb.category.delete", {
-            "object": object_id,
-            "category": category_const,
-            "entry": entry_id
-        })
+        self._api.request(
+            "cmdb.category.delete",
+            {"object": object_id, "category": category_const, "entry": entry_id},
+        )
 
         return self
 
@@ -175,10 +177,7 @@ class CMDBCategory(Request):
         :param entry_id: Entry identifier (only needed for multi-valued categories)
 
         :return returns itself"""
-        params = {
-            "object": object_id,
-            "category": category_const
-        }
+        params = {"object": object_id, "category": category_const}
 
         if entry_id is not None:
             params["entry"] = entry_id
@@ -195,11 +194,10 @@ class CMDBCategory(Request):
         :param entry_id: Entry identifier
 
         :return returns itself"""
-        self._api.request("cmdb.category.recycle", {
-            "object": object_id,
-            "category": category_const,
-            "entry": entry_id
-        })
+        self._api.request(
+            "cmdb.category.recycle",
+            {"object": object_id, "category": category_const, "entry": entry_id},
+        )
 
         return self
 
@@ -211,11 +209,10 @@ class CMDBCategory(Request):
         :param entry_id: Entry identifier
 
         :return returns itself"""
-        result = self._api.request("cmdb.category.quickpurge", {
-            "object": object_id,
-            "category": category_const,
-            "entry": entry_id
-        })
+        result = self._api.request(
+            "cmdb.category.quickpurge",
+            {"object": object_id, "category": category_const, "entry": entry_id},
+        )
 
         self.require_success_without_identifier(result)
 
@@ -235,16 +232,9 @@ class CMDBCategory(Request):
 
         for object_id in object_ids:
             for data in attributes:
-                params = {
-                    "objID": object_id,
-                    "data": data,
-                    "category": category_const
-                }
+                params = {"objID": object_id, "data": data, "category": category_const}
 
-                requests.append({
-                    "method": "cmdb.category.create",
-                    "params": params
-                })
+                requests.append({"method": "cmdb.category.create", "params": params})
 
         result = self._api.batch_request(requests)
         #  Do not check 'id' because in a batch request it is always NULL:
@@ -276,17 +266,22 @@ class CMDBCategory(Request):
                 raise Exception("Each object identifier must be a positive integer")
 
             for category_constant in category_constants:
-                if not isinstance(category_constant, str) or len(category_constant) == 0:
+                if (
+                    not isinstance(category_constant, str)
+                    or len(category_constant) == 0
+                ):
                     raise Exception("Each category constant must be a non-empty string")
 
-                requests.append({
-                    "method": "cmdb.category.read",
-                    "params": {
-                        "objID": object_id,
-                        "category": category_constant,
-                        "status": status
+                requests.append(
+                    {
+                        "method": "cmdb.category.read",
+                        "params": {
+                            "objID": object_id,
+                            "category": category_constant,
+                            "status": status,
+                        },
                     }
-                })
+                )
 
         results = self._api.batch_request(requests)
 
@@ -296,7 +291,9 @@ class CMDBCategory(Request):
         count_category_constants = len(category_constants)
 
         if actual_amount_of_results != expected_amount_of_results:
-            raise Exception(f"Requested entries for {count_objects} object(s), and {count_category_constants} category constant(s), but got {actual_amount_of_results} result(s)")
+            raise Exception(
+                f"Requested entries for {count_objects} object(s), and {count_category_constants} category constant(s), but got {actual_amount_of_results} result(s)"
+            )
 
         return results
 
@@ -311,14 +308,16 @@ class CMDBCategory(Request):
         requests = []
 
         for object_id in object_ids:
-            requests.append({
-                "method": "cmdb.category.update",
-                "params": {
-                    "objID": object_id,
-                    "category": category_const,
-                    "data": attributes
+            requests.append(
+                {
+                    "method": "cmdb.category.update",
+                    "params": {
+                        "objID": object_id,
+                        "category": category_const,
+                        "data": attributes,
+                    },
                 }
-            })
+            )
 
         results = self._api.batch_request(requests)
 
@@ -327,5 +326,4 @@ class CMDBCategory(Request):
         return self
 
     def clear(self):
-        raise("Not implemented")
-
+        raise ("Not implemented")

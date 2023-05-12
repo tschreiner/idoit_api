@@ -4,8 +4,10 @@ from click.testing import CliRunner
 
 from tests.constants import Category, ObjectType
 
+
 class TestClassIdoitApiClientConstantsCategory:
     """Test class idoit_api_client.Constants"""
+
     def test_constructor(self):
         """Test constructor."""
         category = Category()
@@ -14,10 +16,12 @@ class TestClassIdoitApiClientConstantsCategory:
     def test_constant_catg_global(self):
         """Test get_constants."""
         category = Category()
-        assert category.CATG__GLOBAL == 'C__CATG__GLOBAL'
+        assert category.CATG__GLOBAL == "C__CATG__GLOBAL"
+
 
 class TestClassIdoitApiClientConstantsObjectType:
     """Test class idoit_api_client.ObjectType:"""
+
     def test_constructor(self):
         """Test constructor."""
         object_type = ObjectType()
@@ -26,5 +30,4 @@ class TestClassIdoitApiClientConstantsObjectType:
     def test_constant_server(self):
         """Test get_constants."""
         object_type = ObjectType()
-        assert object_type.SERVER == 'C__OBJTYPE__SERVER'
-
+        assert object_type.SERVER == "C__OBJTYPE__SERVER"
